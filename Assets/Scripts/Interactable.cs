@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using Zenject;
 
 public enum InteractableTypes {
@@ -6,8 +7,20 @@ public enum InteractableTypes {
   BED,
 }
 
+public struct InteractStuff {
+  public string Verb;
+  public InteractableTypes Type;
+}
+
 [DisallowMultipleComponent]
 public class Interactable : Entity {
+  public static Dictionary<string, InteractStuff> InteractTypes = new Dictionary<string, InteractStuff>
+  {
+    {
+      "Bed", new InteractStuff { Verb = "Go to sleep", Type = InteractableTypes.BED }
+    }
+  };
+
   [Inject]
   public IGroups Groups { get; set; }
 

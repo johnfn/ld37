@@ -15,12 +15,13 @@ class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
                 case "Bed":
                     var interactable = gameObject.AddComponent<Interactable>();
 
-                    interactable.InteractVerb = "Go to sleep";
-                    interactable.InteractType = InteractableTypes.BED;
+                    interactable.InteractVerb = Interactable.InteractTypes["Bed"].Verb;
+                    interactable.InteractType = Interactable.InteractTypes["Bed"].Type;
                 break;
 
                 default:
                     Debug.Log("Unrecognized type " + name);
+
                     break;
             }
         }
