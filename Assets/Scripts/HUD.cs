@@ -19,9 +19,9 @@ public class HUD : Entity {
     var interactTarget = _playerInteractor.GetTarget();
 
     if (interactTarget != null) {
-      InteractTextHUD.text = string.Format("Space: {0}", interactTarget.InteractVerb);
+      InteractTextHUD.text = string.Format("Space: {0}.", interactTarget.InteractVerb);
     } else {
-      InteractTextHUD.text = string.Format("Space: {0}", "Probably nothing.");
+      InteractTextHUD.text = string.Format("Space: {0}.", "Probably nothing");
     }
   }
 }
