@@ -24,7 +24,9 @@ public class InteractableIcon : Entity {
     if (target == null) {
       _target = null;
 
-      StopCoroutine(coroutine);
+      if (coroutine != null) {
+        StopCoroutine(coroutine);
+      }
 
       coroutine = null;
 
