@@ -20,13 +20,25 @@ public class SleepUntilPanel : Entity {
     }
   }
 
-  private int _targetTime = 0;
+  private int _targetTime {
+    get {
+      return _targetHour * 60 + _targetMinute + (_targetIsAM ? 0 : 60 * 12);
+    }
+  }
+
+  private int _targetHour = 8;
+
+  private int _targetMinute = 0;
+
+  private bool _targetIsAM = true;
 
   private int _indicatorIndex;
 
   public void Awake() {
     _indicatorIndex = 0;
-    _targetTime = 8 * 60;
+    _targetHour = 8;
+    _targetMinute = 0;
+    _targetIsAM = true;
 
     Indicators = new List<GameObject> { HourIndicator, MinuteIndicator, AMPMIndicator };
   }
@@ -65,6 +77,35 @@ public class SleepUntilPanel : Entity {
 
     if (Input.GetKeyDown(KeyCode.RightArrow)) {
       _indicatorIndex = (_indicatorIndex + 1) % Indicators.Count;
+    }
+
+    if (Input.GetKeyDown(KeyCode.DownArrow)) {
+
+      // hour
+      if (_indicatorIndex == 0) {
+        _targetHour += 1;
+      }
+
+      // minute
+      if (_indicatorIndex == 1) {
+        _targetMinute += 15;
+      }
+
+      if (_indicatorIndex == 2) {
+        _targetIsAM = !_targetIsAM;
+      }
+
+      // cascading updates
+
+      if (_targetMinute > 59) {
+        _targetMinute = 0;
+        _targetHour += 1;
+      }
+
+      if (_targetHour > 11) {
+        _targetHour = 0;
+        _targetIsAM = !_targetIsAM;
+      }
     }
   }
 }
