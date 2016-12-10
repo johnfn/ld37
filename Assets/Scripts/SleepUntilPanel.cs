@@ -79,8 +79,7 @@ public class SleepUntilPanel : Entity {
       _indicatorIndex = (_indicatorIndex + 1) % Indicators.Count;
     }
 
-    if (Input.GetKeyDown(KeyCode.DownArrow)) {
-
+    if (Input.GetKeyDown(KeyCode.UpArrow)) {
       // hour
       if (_indicatorIndex == 0) {
         _targetHour += 1;
@@ -104,6 +103,34 @@ public class SleepUntilPanel : Entity {
 
       if (_targetHour > 11) {
         _targetHour = 0;
+        _targetIsAM = !_targetIsAM;
+      }
+    }
+
+    if (Input.GetKeyDown(KeyCode.DownArrow)) {
+      // hour
+      if (_indicatorIndex == 0) {
+        _targetHour -= 1;
+      }
+
+      // minute
+      if (_indicatorIndex == 1) {
+        _targetMinute -= 15;
+      }
+
+      if (_indicatorIndex == 2) {
+        _targetIsAM = !_targetIsAM;
+      }
+
+      // cascading updates
+
+      if (_targetMinute < 0) {
+        _targetMinute = 45;
+        _targetHour -= 1;
+      }
+
+      if (_targetHour < 0) {
+        _targetHour = 11;
         _targetIsAM = !_targetIsAM;
       }
     }
