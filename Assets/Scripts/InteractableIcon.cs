@@ -6,23 +6,62 @@ using DG.Tweening;
 
 [DisallowMultipleComponent]
 public class InteractableIcon : Entity {
+  private Interactable _target;
+
+  private IEnumerator coroutine;
+
+  private Tweener activeTween = null;
+
   void Start() {
-    StartCoroutine(Animate());
+  }
+
+  public void SetTarget(Interactable target) {
+    if (_target != target) {
+      if (coroutine != null) {
+        StopCoroutine(coroutine);
+      }
+
+      _target = target;
+
+      var size = _target.GetComponentInChildren<MeshRenderer>().bounds.size;
+
+      transform.position = new Vector2(
+        _target.transform.position.x + size.x / 2,
+        _target.transform.position.y + size.y
+      );
+
+      coroutine = Animate();
+
+      StartCoroutine(coroutine);
+    }
   }
 
   IEnumerator Animate() {
-    Tweener res;
+    // Super tricky evil bug of death
+    // (The old tween will keep tweening unless you explicitly tell it to stop)
+    if (activeTween != null) {
+      activeTween.Complete();
+    }
 
     while (true) {
-      res = transform.DOMoveY(transform.position.y + 0.5f, 1f)
+      var size = _target.GetComponentInChildren<MeshRenderer>().bounds.size;
+
+      var start = new Vector2(
+        _target.transform.position.x + size.x / 2,
+        _target.transform.position.y + size.y
+      );
+
+      transform.position = start;
+
+      activeTween = transform.DOMoveY(start.y + 1f, 1f)
         .SetEase(Ease.InOutSine);
 
-      yield return res.WaitForCompletion();
+      yield return activeTween.WaitForCompletion();
 
-      res = transform.DOMoveY(transform.position.y - 0.5f, 1f)
+      activeTween = transform.DOMoveY(start.y, 1f)
         .SetEase(Ease.InOutSine);
 
-      yield return res.WaitForCompletion();
+      yield return activeTween.WaitForCompletion();
     }
   }
 }

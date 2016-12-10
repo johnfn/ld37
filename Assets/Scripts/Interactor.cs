@@ -7,9 +7,20 @@ public class Interactor : Entity {
   [Inject]
   public IGroups Groups { get; set; }
 
-  void Update() {
-    Debug.Log("Hello");
+  [Inject]
+  public IPrefabReferences PrefabReferences;
 
-    Debug.Log(Groups.ClosestTo(gameObject));
+  private InteractableIcon _icon;
+
+  private Interactable currentTarget = null;
+
+  void Awake() {
+    _icon = Instantiate(PrefabReferences.InteractableIcon, transform.position, Quaternion.identity);
+  }
+
+  void Update() {
+    var closest = Groups.InteractableClosestTo(gameObject);
+
+    _icon.SetTarget(closest);
   }
 }

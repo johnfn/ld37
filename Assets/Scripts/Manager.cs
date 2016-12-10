@@ -9,8 +9,13 @@ public class Manager: MonoBehaviour {
   [Inject]
   public ITimeManager TimeManager { get; set; }
 
-  void Start() {
+  [Inject]
+  public IPrefabReferences PrefabReferences { get; set; }
 
+  public GameObject InteractableIconGameObject;
+
+  void Awake() {
+    PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
   }
 
   void Update() {

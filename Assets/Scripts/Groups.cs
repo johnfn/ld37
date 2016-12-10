@@ -20,12 +20,14 @@ public class Groups : IGroups {
     }
   }
 
-  public Interactable ClosestTo(GameObject target) {
+  public Interactable InteractableClosestTo(GameObject target) {
     Interactable closestSoFar = null;
 
     foreach (var i in Interactables) {
+      Debug.DrawLine(i.gameObject.transform.position, target.gameObject.transform.position, Color.red);
+
       if (closestSoFar == null ||
-          Util.Distance(i.gameObject, target.gameObject) < Util.Distance(closestSoFar.gameObject, i.gameObject)) {
+          Util.Distance(i.gameObject, target.gameObject) < Util.Distance(closestSoFar.gameObject, target.gameObject)) {
         closestSoFar = i;
       }
     }
@@ -37,5 +39,5 @@ public class Groups : IGroups {
 public interface IGroups {
   List<Interactable> Interactables { get; set; }
 
-  Interactable ClosestTo(GameObject target);
+  Interactable InteractableClosestTo(GameObject target);
 }
