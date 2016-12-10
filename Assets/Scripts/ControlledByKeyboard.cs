@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PhysicsController2D))]
@@ -6,6 +7,9 @@ public class ControlledByKeyboard : Entity {
   private PhysicsController2D _controller;
 
   private Interactor _interactor;
+
+  [Inject]
+  public IPrefabReferences PrefabReferences { get; set; }
 
   void Awake() {
     _controller = GetComponentSafe<PhysicsController2D>();
@@ -38,7 +42,12 @@ public class ControlledByKeyboard : Entity {
     var target = _interactor.GetTarget();
 
     if (!target) {
-      return;
+      var result = Instantiate(PrefabReferences.FollowText, Vector3.zero, Quaternion.identity);
+
+      result.transform.parent = PrefabReferences.Canvas.transform;
+      result.GetComponent<FollowText>().Target = gameObject;
+      result.GetComponent<FollowText>().ShowText("There's nothing there.");
+      result.transform.localScale = new Vector3(1, 1, 1);
     }
   }
 }

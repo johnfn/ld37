@@ -14,8 +14,14 @@ public class Manager: MonoBehaviour {
 
   public GameObject InteractableIconGameObject;
 
+  public GameObject FollowTextGameObject;
+
+  public GameObject Canvas;
+
   void Awake() {
     PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
+    PrefabReferences.FollowText = FollowTextGameObject.GetComponent<FollowText>();
+    PrefabReferences.Canvas = Canvas;
   }
 
   void Update() {
