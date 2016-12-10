@@ -1,26 +1,19 @@
 using UnityEngine;
+using Zenject;
 
 [DisallowMultipleComponent]
-public class Manager : IManager {
-  private float _mapWidth = 10f;
-  private float _mapHeight = 10f;
+public class Manager: MonoBehaviour {
+  [Inject]
+  public IUtil Util { get; set; }
 
-  public float MapWidth {
-    get { return _mapWidth; }
-    set { _mapWidth = value; }
+  [Inject]
+  public ITimeManager TimeManager { get; set; }
+
+  void Start() {
+
   }
 
-  public float MapHeight {
-    get { return _mapHeight; }
-    set { _mapHeight = value; }
+  void Update() {
+    TimeManager.Update();
   }
-
-  public Manager() {
-    Debug.Log("Construct a manager!");
-  }
-}
-
-public interface IManager {
-  float MapWidth { get; set; }
-  float MapHeight { get; set; }
 }

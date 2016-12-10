@@ -163,7 +163,7 @@ public class PhysicsController2D : Entity
     {
         Collisions.Reset();
 
-        ApplyGravity(ref _velocity);
+        // ApplyGravity(ref _velocity);
         ApplyFriction(ref _velocity);
         CapVelocity(ref _velocity);
 
@@ -190,13 +190,16 @@ public class PhysicsController2D : Entity
 
     void ApplyFriction(ref Vector3 velocity)
     {
-        if (Math.Abs(velocity.x) < _stats.Friction)
-        {
+        if (Math.Abs(velocity.x) < _stats.Friction) {
             velocity.x = 0;
-        }
-        else
-        {
+        } else {
             velocity.x -= Math.Sign(velocity.x) * _stats.Friction;
+        }
+
+        if (Math.Abs(velocity.y) < _stats.Friction) {
+            velocity.y = 0;
+        } else {
+            velocity.y -= Math.Sign(velocity.y) * _stats.Friction;
         }
     }
 

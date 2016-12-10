@@ -18,8 +18,12 @@ public class ControlledByKeyboard : Entity {
       _controller.AddHorizontalForce(-0.5f);
     }
 
-    if (Input.GetKey(KeyCode.W) && _controller.Collisions.TouchingBottom) {
-      _controller.AddVerticalForce(3f);
+    if (Input.GetKey(KeyCode.W)) {
+      _controller.AddVerticalForce(0.5f);
+    }
+
+    if (Input.GetKey(KeyCode.S)) {
+      _controller.AddVerticalForce(-0.5f);
     }
   }
 }
