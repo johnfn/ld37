@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/9/2016 10:03:59 PM-->
+<!--Last exported: 12/9/2016 11:29:30 PM-->
 <Tiled2Unity version="1.0.9.3">
   <AssignMaterial mesh="mesh_0001" material="tileset" />
   <AssignMaterial mesh="mesh_tile_0021" material="tileset" />
@@ -11,7 +11,21 @@
     </GameObject>
     <GameObject name="Bed" x="0.11" y="-0.31" z="0">
       <GameObject name="TileObject" x="1.92" y="-0.96" rotation="0" layer="" scaleX="1" scaleY="1">
-        <Property name="AddComp" value="Bed" />
+        <Property name="Name" value="Bed" />
+        <TileObjectComponent width="0.32" height="0.32" />
+        <GameObject name="TileObject" x="0.16" y="0.16" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0021" sortingLayerName="" sortingOrder="0" x="-0.16" y="0.16" />
+        </GameObject>
+      </GameObject>
+      <GameObject name="TileObject" x="5.14" y="-1.3" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="Name" value="Bed" />
+        <TileObjectComponent width="0.32" height="0.32" />
+        <GameObject name="TileObject" x="0.16" y="0.16" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0021" sortingLayerName="" sortingOrder="0" x="-0.16" y="0.16" />
+        </GameObject>
+      </GameObject>
+      <GameObject name="TileObject" x="4.16" y="-2.12" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="Name" value="Bed" />
         <TileObjectComponent width="0.32" height="0.32" />
         <GameObject name="TileObject" x="0.16" y="0.16" scaleX="1" scaleY="1">
           <GameObject name="tile_obj" copy="mesh_tile_0021" sortingLayerName="" sortingOrder="0" x="-0.16" y="0.16" />
