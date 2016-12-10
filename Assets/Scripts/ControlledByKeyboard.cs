@@ -1,5 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 using Zenject;
+
+interface ICanPressSpace {
+  /**
+   * returns true if we can't interact with it any more
+   */
+  bool PressSpace();
+}
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PhysicsController2D))]
@@ -8,12 +16,15 @@ public class ControlledByKeyboard : Entity {
 
   private Interactor _interactor;
 
+  private List<ICanPressSpace> _things;
+
   [Inject]
   public IPrefabReferences PrefabReferences { get; set; }
 
   void Awake() {
     _controller = GetComponentSafe<PhysicsController2D>();
     _interactor = GetComponentSafe<Interactor>();
+    _things = new List<ICanPressSpace>();
   }
 
   void Update() {
@@ -33,8 +44,27 @@ public class ControlledByKeyboard : Entity {
       _controller.AddVerticalForce(-0.5f);
     }
 
-    if (Input.GetKey(KeyCode.Space)) {
-      Interact();
+    if (Input.GetKeyDown(KeyCode.Space)) {
+      // Try to find something to interact with
+
+      var interacted = false;
+
+      if (_things.Count > 0) {
+        var thing = _things[0];
+        var result = thing.PressSpace();
+
+        if (result) {
+          _things.Remove(thing);
+        }
+
+        interacted = true;
+      } else {
+        // fail
+
+        if (!interacted) {
+          Interact();
+        }
+      }
     }
   }
 
@@ -42,12 +72,9 @@ public class ControlledByKeyboard : Entity {
     var target = _interactor.GetTarget();
 
     if (!target) {
-      var result = Instantiate(PrefabReferences.FollowText, Vector3.zero, Quaternion.identity);
+      var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
 
-      result.transform.parent = PrefabReferences.Canvas.transform;
-      result.GetComponent<FollowText>().Target = gameObject;
-      result.GetComponent<FollowText>().ShowText("There's nothing there.");
-      result.transform.localScale = new Vector3(1, 1, 1);
+      _things.Add(result);
     }
   }
 }

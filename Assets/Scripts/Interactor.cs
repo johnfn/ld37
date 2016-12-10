@@ -9,6 +9,8 @@ public class Interactor : Entity {
   [Inject]
   public IPrefabReferences PrefabReferences;
 
+  public float DistanceToInteract = 2f;
+
   private InteractableIcon _icon;
 
   private Interactable currentTarget = null;
@@ -21,13 +23,9 @@ public class Interactor : Entity {
     var closest = Groups.InteractableClosestTo(gameObject);
     var distance = Util.Distance(closest.gameObject, gameObject);
 
-    if (distance < 1f) {
-      currentTarget = closest;
-    } else {
-      closest = null;
-    }
+    currentTarget = distance < DistanceToInteract ? closest : null;
 
-    _icon.SetTarget(closest);
+    _icon.SetTarget(currentTarget);
   }
 
   public Interactable GetTarget() {

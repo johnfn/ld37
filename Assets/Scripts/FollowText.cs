@@ -3,7 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class FollowText : Entity {
+public class FollowText : Entity, ICanPressSpace {
+  public static FollowText Instance;
+
   public GameObject Target;
 
   private Vector2 TargetSize;
@@ -18,6 +20,8 @@ public class FollowText : Entity {
 
   void Awake() {
     Text = GetComponent<Text>();
+
+    Instance = this;
   }
 
   void Start() {
@@ -26,6 +30,21 @@ public class FollowText : Entity {
 
   public void ShowText(string text) {
     StartCoroutine(_typingCoroutine = ShowTextHelper("There's nothing there."));
+  }
+
+  public bool PressSpace() {
+    if (!_finishedTyping) {
+      _finishedTyping = true;
+      Text.text = _fullMessage;
+      StopCoroutine(_typingCoroutine);
+
+      return false;
+    } else {
+      Destroy(gameObject);
+      Instance = null;
+
+      return true;
+    }
   }
 
   private IEnumerator ShowTextHelper(string text) {
@@ -48,16 +67,5 @@ public class FollowText : Entity {
       Target.transform.position.x + TargetSize.x / 2 + 0.2f,
       Target.transform.position.y + TargetSize.y / 2
     );
-
-    if (Input.GetKeyDown(KeyCode.Space)) {
-      if (!_finishedTyping) {
-        _finishedTyping = true;
-        Text.text = _fullMessage;
-        StopCoroutine(_typingCoroutine);
-      } else {
-        _finishedTyping = false;
-        Text.text = "";
-      }
-    }
   }
 }
