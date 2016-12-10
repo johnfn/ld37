@@ -5,5 +5,7 @@ public class ZenjectInstaller: MonoInstaller {
         Container.Bind<IUtil>().To<Util>().AsSingle();
 
         Container.Bind<ITimeManager>().To<TimeManager>().AsSingle();
+
+        Container.Bind<IGroups>().To<Groups>().AsSingle();
     }
 }

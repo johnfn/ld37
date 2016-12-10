@@ -13,6 +13,10 @@ public class Util : IUtil {
     get { return _mapHeight; }
     set { _mapHeight = value; }
   }
+
+  public static float Distance(GameObject a, GameObject b) {
+    return (a.transform.position - b.transform.position).magnitude;
+  }
 }
 
 public interface IUtil {

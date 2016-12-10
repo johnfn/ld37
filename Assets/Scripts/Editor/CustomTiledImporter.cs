@@ -8,6 +8,26 @@ class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
     public void HandleCustomProperties(GameObject gameObject,
         IDictionary<string, string> props) {
 
+        if (props.ContainsKey("Name")) {
+            var name = props["Name"];
+
+            switch (name) {
+                case "Bed":
+                    gameObject.AddComponent<Bed>();
+                    gameObject.AddComponent<Interactable>();
+
+                    Debug.Log(gameObject);
+                break;
+
+                default:
+                    Debug.Log("Unrecognized type " + name);
+                    break;
+            }
+        }
+
+        // get component by string
+
+        /*
         if (props.ContainsKey("AddComp")) {
             Debug.Log("Look up " + props["AddComp"]);
 
@@ -17,6 +37,7 @@ class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
 
             gameObject.AddComponent(type);
         }
+        */
     }
 
     public void CustomizePrefab(GameObject prefab) {
