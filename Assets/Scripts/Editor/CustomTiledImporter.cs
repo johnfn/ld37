@@ -13,10 +13,10 @@ class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
 
             switch (name) {
                 case "Bed":
-                    var bed = gameObject.AddComponent<Bed>();
                     var interactable = gameObject.AddComponent<Interactable>();
 
                     interactable.InteractVerb = "Go to sleep";
+                    interactable.InteractType = InteractableTypes.BED;
                 break;
 
                 default:

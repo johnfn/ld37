@@ -1,6 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
+
+public enum InteractableTypes {
+  NOT_SET,
+  BED,
+}
 
 [DisallowMultipleComponent]
 public class Interactable : Entity {
@@ -8,6 +12,8 @@ public class Interactable : Entity {
   public IGroups Groups { get; set; }
 
   public string InteractVerb = "Dont know!";
+
+  public InteractableTypes InteractType = InteractableTypes.NOT_SET;
 
   void Awake() {
     Groups.Interactables.Add(this);

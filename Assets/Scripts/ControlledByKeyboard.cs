@@ -75,6 +75,18 @@ public class ControlledByKeyboard : Entity {
       var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
 
       _things.Add(result);
+      return;
+    }
+
+    switch (target.InteractType) {
+      case InteractableTypes.BED:
+        Debug.Log("Zzz");
+
+        break;
+      default:
+        Debug.LogError("Unknown interact type!");
+
+        break;
     }
   }
 }
