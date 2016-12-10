@@ -20,6 +20,9 @@ public class TimebarController : Entity {
   void Start() {
     _sunStartX = Sun.rectTransform.localPosition.x;
     _distanceForSunToGo = SunEndPosition.rectTransform.localPosition.x  - Sun.rectTransform.localPosition.x;
+
+    // You have served your purpose. I have no need for you now.
+    Destroy(SunEndPosition);
   }
 
   void Update() {
