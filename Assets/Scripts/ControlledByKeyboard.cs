@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PhysicsController2D))]
