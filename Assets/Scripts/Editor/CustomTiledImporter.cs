@@ -1,19 +1,27 @@
-/*
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
+using System;
 
 [Tiled2Unity.CustomTiledImporter]
 class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
     public void HandleCustomProperties(GameObject gameObject,
-        IDictionary<string, string> keyValuePairs) {
+        IDictionary<string, string> props) {
 
-        Debug.Log("Handle custom properties from Tiled map");
+        if (props.ContainsKey("AddComp")) {
+            Debug.Log("Look up " + props["AddComp"]);
+
+            var stringName = props["AddComp"];
+            Assembly asm = typeof(Entity).Assembly;
+            Type type = asm.GetType(props["AddComp"]);
+
+            gameObject.AddComponent(type);
+        }
     }
 
     public void CustomizePrefab(GameObject prefab) {
-        var x = 5;
+        Debug.Log(prefab.name);
 
-        Debug.Log("Customize prefab");
+        prefab.name = "Woooo";
     }
 }
-*/
