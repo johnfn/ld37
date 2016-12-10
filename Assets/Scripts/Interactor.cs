@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 [DisallowMultipleComponent]
@@ -20,7 +19,18 @@ public class Interactor : Entity {
 
   void Update() {
     var closest = Groups.InteractableClosestTo(gameObject);
+    var distance = Util.Distance(closest.gameObject, gameObject);
+
+    if (distance < 1f) {
+      currentTarget = closest;
+    } else {
+      closest = null;
+    }
 
     _icon.SetTarget(closest);
+  }
+
+  public Interactable GetTarget() {
+    return currentTarget;
   }
 }

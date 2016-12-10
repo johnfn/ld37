@@ -5,8 +5,11 @@ using UnityEngine;
 public class ControlledByKeyboard : Entity {
   private PhysicsController2D _controller;
 
+  private Interactor _interactor;
+
   void Awake() {
     _controller = GetComponentSafe<PhysicsController2D>();
+    _interactor = GetComponentSafe<Interactor>();
   }
 
   void Update() {
@@ -24,6 +27,18 @@ public class ControlledByKeyboard : Entity {
 
     if (Input.GetKey(KeyCode.S)) {
       _controller.AddVerticalForce(-0.5f);
+    }
+
+    if (Input.GetKey(KeyCode.Space)) {
+      Interact();
+    }
+  }
+
+  private void Interact() {
+    var target = _interactor.GetTarget();
+
+    if (!target) {
+      return;
     }
   }
 }

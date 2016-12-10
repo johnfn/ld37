@@ -12,11 +12,27 @@ public class InteractableIcon : Entity {
 
   private Tweener activeTween = null;
 
-  void Start() {
+  private SpriteRenderer _renderer;
+
+  void Awake() {
+    _renderer = GetComponent<SpriteRenderer>();
   }
 
   public void SetTarget(Interactable target) {
+    _renderer.enabled = (target != null);
+
+    if (target == null) {
+      _target = null;
+
+      StopCoroutine(coroutine);
+
+      coroutine = null;
+
+      return;
+    }
+
     if (_target != target) {
+
       if (coroutine != null) {
         StopCoroutine(coroutine);
       }
