@@ -14,6 +14,9 @@ namespace johnfn {
     [Inject]
     public IPrefabReferences PrefabReferences;
 
+    [Inject]
+    public ITimeManager Time;
+
     public GameObject HourIndicator;
 
     public GameObject MinuteIndicator;
@@ -79,6 +82,8 @@ namespace johnfn {
         gameObject.Hide();
 
         yield return fadeImage.FadeOut();
+
+        Time.SetCurrentTime(_targetTime);
 
         // TODO - set time!
 

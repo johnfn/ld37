@@ -3,7 +3,7 @@ using UnityEngine;
 namespace johnfn {
   [DisallowMultipleComponent]
   public class TimeManager : ITimeManager {
-    private float _minutesSinceMidnight = 0;
+    private float _minutesSinceMidnight = 6 * 60;
 
     public float ArbitarySpeedupAmount = 30f;
 
@@ -11,6 +11,10 @@ namespace johnfn {
       get {
         return MinutesSinceDawnToString(_minutesSinceMidnight);
       }
+    }
+
+    public void SetCurrentTime(float minutesSinceMidnight) {
+      _minutesSinceMidnight = minutesSinceMidnight;
     }
 
     public static string MinutesSinceDawnToString(float minutes) {
@@ -33,12 +37,16 @@ namespace johnfn {
     }
 
     public void Update() {
-      _minutesSinceMidnight += Time.deltaTime * ArbitarySpeedupAmount;
+      if (EffectedByModes.CurrentMode == Mode.Normal) {
+        _minutesSinceMidnight += Time.deltaTime * ArbitarySpeedupAmount;
+      }
     }
   }
 
   public interface ITimeManager {
     string currentTime { get; }
+
+    void SetCurrentTime(float minutesSinceMidnight);
 
     float percentageTimePassed { get; }
 
