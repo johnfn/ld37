@@ -70,7 +70,7 @@ namespace johnfn {
       EffectedByModes.SetMode(Mode.UsingUI);
     }
 
-    public IEnumerator Hide() {
+    public IEnumerator GoToSleep() {
       if (Util.Debug) {
         gameObject.Hide();
       } else {
@@ -78,7 +78,11 @@ namespace johnfn {
 
         gameObject.Hide();
 
-        yield return fadeImage.FadeInAndOut();
+        yield return fadeImage.FadeOut();
+
+        // TODO - set time!
+
+        yield return fadeImage.FadeIn();
 
         EffectedByModes.SetMode(Mode.Normal);
       }
@@ -172,7 +176,7 @@ namespace johnfn {
       }
 
       if (Input.GetKeyDown(KeyCode.Return)) {
-        StartCoroutine(Hide());
+        StartCoroutine(GoToSleep());
       }
     }
   }

@@ -14,7 +14,7 @@ namespace johnfn {
       _imageToFade = GetComponent<Image>();
     }
 
-    public IEnumerator FadeInAndOut() {
+    public IEnumerator FadeOut() {
       for (var i = 0; i < FramesToSleep; i++) {
         _imageToFade.color = new Color(0, 0, 0, (float) i / (float) FramesToSleep);
 
@@ -24,7 +24,9 @@ namespace johnfn {
       for (var i = 0; i < FramesToSleep; i++) {
         yield return new WaitForEndOfFrame();
       }
+    }
 
+    public IEnumerator FadeIn() {
       for (var i = 0; i < FramesToSleep; i++) {
         _imageToFade.color = new Color(0, 0, 0, (float) (FramesToSleep - i) / (float) FramesToSleep);
 

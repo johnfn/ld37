@@ -3,13 +3,13 @@ using UnityEngine;
 namespace johnfn {
   [DisallowMultipleComponent]
   public class TimeManager : ITimeManager {
-    private float _minutesSinceDawn = 0;
+    private float _minutesSinceMidnight = 0;
 
-    private int startHour = 6;
+    public float ArbitarySpeedupAmount = 30f;
 
     public string currentTime {
       get {
-        return MinutesSinceDawnToString(_minutesSinceDawn + (startHour * 60));
+        return MinutesSinceDawnToString(_minutesSinceMidnight);
       }
     }
 
@@ -28,12 +28,12 @@ namespace johnfn {
 
     public float percentageTimePassed {
       get {
-        return _minutesSinceDawn / (60 * 24);
+        return (_minutesSinceMidnight - 6 * 60) / (60 * 24);
       }
     }
 
     public void Update() {
-      _minutesSinceDawn += Time.deltaTime * 30;
+      _minutesSinceMidnight += Time.deltaTime * ArbitarySpeedupAmount;
     }
   }
 
