@@ -14,6 +14,8 @@ public class SleepUntilPanel : Entity {
 
   public List<GameObject> Indicators;
 
+  public bool ActiveOnStart = false;
+
   private GameObject _activeIndicator {
     get {
       return Indicators[_indicatorIndex];
@@ -41,11 +43,21 @@ public class SleepUntilPanel : Entity {
     _targetIsAM = true;
 
     Indicators = new List<GameObject> { HourIndicator, MinuteIndicator, AMPMIndicator };
+
+    gameObject.SetActive(ActiveOnStart);
   }
 
   public void Update() {
     HandleKeyEvents();
     Render();
+  }
+
+  public void Show() {
+    gameObject.SetActive(true);
+  }
+
+  public void Hide() {
+    gameObject.SetActive(false);
   }
 
   private void Render() {
@@ -133,6 +145,10 @@ public class SleepUntilPanel : Entity {
         _targetHour = 11;
         _targetIsAM = !_targetIsAM;
       }
+    }
+
+    if (Input.GetKeyDown(KeyCode.Return)) {
+      Hide();
     }
   }
 }

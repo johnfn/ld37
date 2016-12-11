@@ -80,7 +80,9 @@ public class ControlledByKeyboard : Entity {
 
     switch (target.InteractType) {
       case InteractableTypes.BED:
-        Debug.Log("Zzz");
+        var panel = PrefabReferences.TimeSelectionCanvas.GetComponent<SleepUntilPanel>();
+
+        panel.Show();
 
         break;
       default:

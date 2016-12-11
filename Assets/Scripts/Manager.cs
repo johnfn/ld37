@@ -18,10 +18,13 @@ public class Manager: MonoBehaviour {
 
   public GameObject Canvas;
 
+  public GameObject TimeSelectionCanvas;
+
   void Awake() {
     PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
     PrefabReferences.FollowText = FollowTextGameObject.GetComponent<FollowText>();
     PrefabReferences.Canvas = Canvas;
+    PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
   }
 
   void Update() {
