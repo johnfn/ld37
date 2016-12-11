@@ -13,6 +13,12 @@ namespace johnfn {
       }
     }
 
+    public int MinutesSinceMidnight {
+      get {
+        return (int) _minutesSinceMidnight;
+      }
+    }
+
     public void SetCurrentTime(float minutesSinceMidnight) {
       _minutesSinceMidnight = minutesSinceMidnight;
     }
@@ -49,6 +55,8 @@ namespace johnfn {
     void SetCurrentTime(float minutesSinceMidnight);
 
     float percentageTimePassed { get; }
+
+    int MinutesSinceMidnight { get; }
 
     void Update();
   }

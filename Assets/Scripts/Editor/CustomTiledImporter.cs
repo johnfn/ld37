@@ -10,6 +10,8 @@ namespace johnfn {
             if (props.ContainsKey("Name")) {
                 var name = props["Name"];
 
+                Debug.Log("Add:: " + name);
+
                 switch (name) {
                     case "Bed":
                     {
@@ -35,6 +37,8 @@ namespace johnfn {
 
                         interactable.InteractVerb = Interactable.InteractTypes["NPCDrifter"].Verb;
                         interactable.InteractType = Interactable.InteractTypes["NPCDrifter"].Type;
+
+                        gameObject.AddComponent<NPC>();
                     }
                     break;
 
