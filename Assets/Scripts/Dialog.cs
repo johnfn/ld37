@@ -53,11 +53,25 @@ namespace johnfn {
     private IEnumerator HandleDialog() {
       for (var i = 0; i < _activeDialog.Count; i++) {
         SpeakerText.text = _activeDialog[i].Speaker;
+
+        for (var j = 0; j < _activeDialog[i].Content.Length; j++) {
+          DialogText.text = _activeDialog[i].Content.Substring(0, j);
+
+          yield return null;
+
+          if (Input.GetKeyDown(KeyCode.Space)) {
+            break;
+          }
+        }
+
         DialogText.text = _activeDialog[i].Content;
 
-        yield return new WaitForEndOfFrame();
+        yield return null;
 
         while (!Input.GetKeyDown(KeyCode.Space)) {
+          // Note: WaitUntilEndOfFrame does NOT work here! it is not
+          // interchangable with null, for some terrible reason!
+
           yield return null;
         }
       }
