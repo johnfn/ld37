@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 namespace johnfn {
@@ -7,11 +8,16 @@ namespace johnfn {
     public string Content;
   }
 
+  public enum DialogID {
+    NPCRec1,
+
+    None,
+  }
+
   [DisallowMultipleComponent]
   public class Dialog : Entity {
-
-    public static Dictionary<string, List<DialogElement> > AllDialog = new Dictionary<string, List<DialogElement> > {
-      { "NPCRec1", new List<DialogElement> {
+    public static Dictionary<DialogID, List<DialogElement> > AllDialog = new Dictionary<DialogID, List<DialogElement> > {
+      { DialogID.NPCRec1, new List<DialogElement> {
           new DialogElement { Speaker = "You", Content = "Umm, Hello." },
           new DialogElement { Speaker = "Receptionist", Content = "Sup." },
           new DialogElement { Speaker = "You", Content = "Nm nm just chillin u?" },
@@ -20,12 +26,29 @@ namespace johnfn {
       }
     };
 
+    public Text DialogText;
+
+    public Text SpeakerText;
+
+    private List<DialogElement> _activeDialog = null;
+
     void Awake() {
       gameObject.Hide();
     }
 
-    void Update() {
+    public void StartDialog(DialogID id) {
+      if (id == DialogID.None) {
+        return;
+      }
 
+      EffectedByModes.SetMode(Mode.UsingUI);
+
+      gameObject.Show();
+
+      _activeDialog = AllDialog[id];
+
+      SpeakerText.text = _activeDialog[0].Speaker;
+      DialogText.text = _activeDialog[0].Content;
     }
   }
 }

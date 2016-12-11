@@ -88,6 +88,7 @@ namespace johnfn {
 
           break;
         case InteractableTypes.NPC_REC:
+          PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(DialogID.NPCRec1);
 
           break;
         default:

@@ -24,6 +24,8 @@ namespace johnfn {
 
     public GameObject TimeSelectionCanvas;
 
+    public GameObject Dialog;
+
     public bool Debug = true;
 
     void Awake() {
@@ -32,6 +34,7 @@ namespace johnfn {
       PrefabReferences.Canvas = Canvas;
       PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
       PrefabReferences.FadeOverlay = FadeOverlay;
+      PrefabReferences.Dialog = Dialog;
 
       Util.Debug = Debug;
     }

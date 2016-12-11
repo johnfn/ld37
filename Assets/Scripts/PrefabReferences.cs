@@ -13,6 +13,8 @@ namespace johnfn {
 
     public GameObject FadeOverlay { get; set; }
 
+    public GameObject Dialog { get; set; }
+
     public FollowText CreateFollowText(GameObject target, string text) {
       if (FollowText.Instance) {
         return null;
@@ -40,5 +42,7 @@ namespace johnfn {
     GameObject TimeSelectionCanvas { get; set; }
 
     GameObject FadeOverlay { get; set; }
+
+    GameObject Dialog { get; set; }
   }
 }
