@@ -28,6 +28,8 @@ namespace johnfn {
 
     public GameObject MapController;
 
+    public GameObject DebugTile;
+
     public bool Debug = true;
 
     void Awake() {
@@ -38,6 +40,7 @@ namespace johnfn {
       PrefabReferences.FadeOverlay = FadeOverlay;
       PrefabReferences.Dialog = Dialog;
       PrefabReferences.MapController = MapController.GetComponent<MapController>();
+      PrefabReferences.DebugTile = DebugTile;
 
       Util.Debug = Debug;
     }

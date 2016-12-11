@@ -53,6 +53,15 @@ namespace johnfn {
 
     void Start() {
       CalculateAllOfTimeAndSpace();
+
+      var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(4f, 4f));
+
+      Debug.Log("HEllo!");
+      Debug.Log(result.Count);
+
+      foreach (var vector in result) {
+        GameObject.Instantiate(_prefabReferences.DebugTile, vector, Quaternion.identity);
+      }
     }
 
     private void CalculateAllOfTimeAndSpace() {
@@ -64,9 +73,6 @@ namespace johnfn {
 
       switch (currentDesire) {
         case DesireType.TalkToRec:
-          var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(4f, 4f));
-
-          Debug.Log(result);
 
           break;
 

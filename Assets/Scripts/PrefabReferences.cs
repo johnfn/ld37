@@ -17,6 +17,8 @@ namespace johnfn {
 
     public MapController MapController { get; set; }
 
+    public GameObject DebugTile { get; set; }
+
     public FollowText CreateFollowText(GameObject target, string text) {
       if (FollowText.Instance) {
         return null;
@@ -48,5 +50,7 @@ namespace johnfn {
     GameObject Dialog { get; set; }
 
     MapController MapController { get; set; }
+
+    GameObject DebugTile { get; set; }
   }
 }

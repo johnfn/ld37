@@ -3,6 +3,18 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace johnfn {
+  public class AStarNode {
+    public AStarNode CameFrom;
+
+    public Vector2 Position;
+
+    public int Distance;
+
+    public float HeuristicDistanceLeft;
+
+    public bool ExpandedFromHereYet;
+  }
+
   [DisallowMultipleComponent]
   public class MapController : Entity {
     public GameObject AllWallObjects;
@@ -36,10 +48,6 @@ namespace johnfn {
     public int mapHeight;
 
     void Awake() {
-
-    }
-
-    void Start() {
       var allTransforms = new List<Transform>();
 
       foreach (Transform child in AllWallObjects.transform) {
@@ -77,14 +85,92 @@ namespace johnfn {
       );
     }
 
+    public Vector2 MapToWorldPos(Vector2 mapPos) {
+      return new Vector2(
+        (float) (mapPos.x * spriteWidth + x),
+        (float) (mapPos.y * spriteWidth + y)
+      );
+    }
+
     public List<Vector2> PathFind(Vector2 startWorld, Vector2 stopWorld) {
       var start = WorldToMapPos(startWorld);
-      var stop  = WorldToMapPos(stopWorld);
+      var goal  = WorldToMapPos(stopWorld);
 
-      return new List<Vector2> {
-        start,
-        stop,
+      Debug.Log("Go");
+
+      var aStarNodes = new List<AStarNode> {
+        new AStarNode {
+          Distance = 1,
+          Position = start,
+          CameFrom = null,
+          HeuristicDistanceLeft = (start - goal).magnitude,
+          ExpandedFromHereYet = false,
+        }
       };
+
+      var dxdy = new List<Vector2> {
+        new Vector2(0 , -1),
+        new Vector2(0 ,  1),
+        new Vector2(-1,  0),
+        new Vector2(1 ,  0),
+      };
+
+      while (true) {
+        if (aStarNodes.Find(x => x.Position == goal) != null) {
+          break;
+        }
+
+        if (aStarNodes.Count == 0) {
+          Debug.Log("Oh god... no... NO!!!");
+
+          break;
+        }
+
+        var current = aStarNodes
+          .Where(_ => !_.ExpandedFromHereYet)
+          .MinBy(_ => _.Distance + _.HeuristicDistanceLeft);
+        var neighborDistance = current.Distance + 1;
+
+        current.ExpandedFromHereYet = true;
+
+        foreach (var diff in dxdy) {
+          var neighborPosition = current.Position + diff;
+          var neighborLookup = aStarNodes.Find(_ => _.Position == neighborPosition);
+          var newNode = new AStarNode {
+            Distance = neighborDistance,
+            Position = neighborPosition,
+            CameFrom = current,
+            HeuristicDistanceLeft = (neighborPosition - goal).magnitude,
+            ExpandedFromHereYet = false,
+          };
+
+          if (neighborLookup == null) {
+            aStarNodes.Add(newNode);
+          } else if (neighborLookup.Distance > neighborDistance) {
+            aStarNodes.Remove(neighborLookup);
+            aStarNodes.Add(newNode);
+          }
+        }
+      }
+
+      var end = aStarNodes.Find(x => x.Position == goal);
+
+      if (end == null) {
+        return new List<Vector2>();
+      }
+
+      var result = new List<AStarNode> {
+        end
+      };
+
+      Debug.Log("!!" + aStarNodes.Count);
+
+      while (result.Last().Position != start) {
+        Debug.Log("Add" + result.Last().Position);
+        result.Add(result.Last().CameFrom);
+      }
+
+      return result.Select(_ => MapToWorldPos(_.Position)).ToList();
     }
   }
 }
