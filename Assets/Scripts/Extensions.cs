@@ -53,8 +53,6 @@ public static class Extensions {
   }
 
   public static void Show(this GameObject target) {
-    Debug.Log("Show!");
-
     if (!Extensions.HiddenInfo.ContainsKey(target)) {
       Extensions.HiddenInfo[target] = new HiddenStuff {
         IsHidden = false

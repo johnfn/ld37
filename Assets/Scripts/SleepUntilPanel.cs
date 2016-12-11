@@ -56,12 +56,16 @@ public class SleepUntilPanel : Entity {
   }
 
   public void Update() {
+    Debug.Log("Update sleep panel");
+
     HandleKeyEvents();
     Render();
   }
 
   public void Show() {
     gameObject.Show();
+
+    EffectedByModes.SetMode(Mode.UsingUI);
   }
 
   public IEnumerator Hide() {
@@ -73,6 +77,8 @@ public class SleepUntilPanel : Entity {
       gameObject.Hide();
 
       yield return fadeImage.FadeInAndOut();
+
+      EffectedByModes.SetMode(Mode.Normal);
     }
   }
 
