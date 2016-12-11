@@ -1,70 +1,73 @@
 using UnityEngine;
 using Zenject;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(Camera))]
-public class CameraFollow : Entity {
-    [Inject]
-    public IUtil Util { get; set; }
+namespace johnfn {
 
-    public GameObject Target;
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Camera))]
+    public class CameraFollow : Entity {
+        [Inject]
+        public IUtil Util { get; set; }
 
-    public float CameraSpeed;
+        public GameObject Target;
 
-    public float Height {
-        get { return 2.0f * _camera.orthographicSize; }
-    }
+        public float CameraSpeed;
 
-    public float Width {
-        get { return Height * _camera.aspect; }
-    }
+        public float Height {
+            get { return 2.0f * _camera.orthographicSize; }
+        }
 
-    private Camera _camera;
+        public float Width {
+            get { return Height * _camera.aspect; }
+        }
 
-    void Start()
-    {
-        _camera = GetComponent<Camera>();
-    }
+        private Camera _camera;
 
-    public Vector3 ClampWithinCamera(Vector3 point)
-    {
-        var resultX = Mathf.Clamp(point.x, transform.position.x - Width, transform.position.x + Width);
-        var resultY = Mathf.Clamp(point.y, transform.position.y - Height, transform.position.y + Height);
+        void Start()
+        {
+            _camera = GetComponent<Camera>();
+        }
 
-        return new Vector3(resultX, resultY, point.z);
-    }
+        public Vector3 ClampWithinCamera(Vector3 point)
+        {
+            var resultX = Mathf.Clamp(point.x, transform.position.x - Width, transform.position.x + Width);
+            var resultY = Mathf.Clamp(point.y, transform.position.y - Height, transform.position.y + Height);
 
-    public bool IsWithinCamera(Vector3 point)
-    {
-        return point == ClampWithinCamera(point);
-    }
+            return new Vector3(resultX, resultY, point.z);
+        }
 
-    void LateUpdate()
-    {
-        /*
-        var minX = Mathf.Floor(Target.transform.position.x / Util.MapWidth) * Util.MapWidth;
-        var minY = Mathf.Floor(Target.transform.position.y / Util.MapHeight) * Util.MapHeight;
+        public bool IsWithinCamera(Vector3 point)
+        {
+            return point == ClampWithinCamera(point);
+        }
 
-        var maxX = minX + Util.MapWidth;
-        var maxY = minY + Util.MapHeight;
+        void LateUpdate()
+        {
+            /*
+            var minX = Mathf.Floor(Target.transform.position.x / Util.MapWidth) * Util.MapWidth;
+            var minY = Mathf.Floor(Target.transform.position.y / Util.MapHeight) * Util.MapHeight;
 
-        minX += Width / 2;
-        maxX -= Width / 2;
+            var maxX = minX + Util.MapWidth;
+            var maxY = minY + Util.MapHeight;
 
-        minY += Height / 2;
-        maxY -= Height / 2;
+            minX += Width / 2;
+            maxX -= Width / 2;
 
-        var camX = Mathf.Clamp(Target.transform.position.x, minX, maxX);
-        var camY = Mathf.Clamp(Target.transform.position.y, minY, maxY);
+            minY += Height / 2;
+            maxY -= Height / 2;
 
-        var desiredPosition = new Vector3(camX, camY, transform.position.z);
-        */
+            var camX = Mathf.Clamp(Target.transform.position.x, minX, maxX);
+            var camY = Mathf.Clamp(Target.transform.position.y, minY, maxY);
 
-        var oldZ = transform.position.z;
-        var desiredPosition = Target.transform.position;
+            var desiredPosition = new Vector3(camX, camY, transform.position.z);
+            */
 
-        desiredPosition.z = oldZ;
+            var oldZ = transform.position.z;
+            var desiredPosition = Target.transform.position;
 
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * CameraSpeed);
+            desiredPosition.z = oldZ;
+
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * CameraSpeed);
+        }
     }
 }

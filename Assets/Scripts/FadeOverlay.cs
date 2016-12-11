@@ -2,31 +2,34 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-[DisallowMultipleComponent]
-public class FadeOverlay : Entity {
-  public int FramesToSleep = 30;
+namespace johnfn {
 
-  private Image _imageToFade;
+  [DisallowMultipleComponent]
+  public class FadeOverlay : Entity {
+    public int FramesToSleep = 30;
 
-  public void Awake() {
-    _imageToFade = GetComponent<Image>();
-  }
+    private Image _imageToFade;
 
-  public IEnumerator FadeInAndOut() {
-    for (var i = 0; i < FramesToSleep; i++) {
-      _imageToFade.color = new Color(0, 0, 0, (float) i / (float) FramesToSleep);
-
-      yield return new WaitForEndOfFrame();
+    public void Awake() {
+      _imageToFade = GetComponent<Image>();
     }
 
-    for (var i = 0; i < FramesToSleep; i++) {
-      yield return new WaitForEndOfFrame();
-    }
+    public IEnumerator FadeInAndOut() {
+      for (var i = 0; i < FramesToSleep; i++) {
+        _imageToFade.color = new Color(0, 0, 0, (float) i / (float) FramesToSleep);
 
-    for (var i = 0; i < FramesToSleep; i++) {
-      _imageToFade.color = new Color(0, 0, 0, (float) (FramesToSleep - i) / (float) FramesToSleep);
+        yield return new WaitForEndOfFrame();
+      }
 
-      yield return new WaitForEndOfFrame();
+      for (var i = 0; i < FramesToSleep; i++) {
+        yield return new WaitForEndOfFrame();
+      }
+
+      for (var i = 0; i < FramesToSleep; i++) {
+        _imageToFade.color = new Color(0, 0, 0, (float) (FramesToSleep - i) / (float) FramesToSleep);
+
+        yield return new WaitForEndOfFrame();
+      }
     }
   }
 }

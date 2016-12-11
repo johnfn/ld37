@@ -1,27 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[DisallowMultipleComponent]
-public class HUD : Entity {
-  public Text InteractTextHUD;
+namespace johnfn {
 
-  public GameObject Player;
+  [DisallowMultipleComponent]
+  public class HUD : Entity {
+    public Text InteractTextHUD;
 
-  private Interactor _playerInteractor;
+    public GameObject Player;
 
-  void Start() {
-    _playerInteractor = Player.GetComponent<Interactor>();
-  }
+    private Interactor _playerInteractor;
 
-  void Update() {
-    // interactor text
+    void Start() {
+      _playerInteractor = Player.GetComponent<Interactor>();
+    }
 
-    var interactTarget = _playerInteractor.GetTarget();
+    void Update() {
+      // interactor text
 
-    if (interactTarget != null) {
-      InteractTextHUD.text = string.Format("Space: {0}.", interactTarget.InteractVerb);
-    } else {
-      InteractTextHUD.text = string.Format("Space: {0}.", "Probably nothing");
+      var interactTarget = _playerInteractor.GetTarget();
+
+      if (interactTarget != null) {
+        InteractTextHUD.text = string.Format("Space: {0}.", interactTarget.InteractVerb);
+      } else {
+        InteractTextHUD.text = string.Format("Space: {0}.", "Probably nothing");
+      }
     }
   }
 }

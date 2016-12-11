@@ -1,40 +1,43 @@
 using UnityEngine;
 using Zenject;
 
-[DisallowMultipleComponent]
-public class Manager: MonoBehaviour {
-  [Inject]
-  public IUtil Util { get; set; }
+namespace johnfn {
 
-  [Inject]
-  public ITimeManager TimeManager { get; set; }
+  [DisallowMultipleComponent]
+  public class Manager: MonoBehaviour {
+    [Inject]
+    public IUtil Util { get; set; }
 
-  [Inject]
-  public IPrefabReferences PrefabReferences { get; set; }
+    [Inject]
+    public ITimeManager TimeManager { get; set; }
 
-  public GameObject InteractableIconGameObject;
+    [Inject]
+    public IPrefabReferences PrefabReferences { get; set; }
 
-  public GameObject FollowTextGameObject;
+    public GameObject InteractableIconGameObject;
 
-  public GameObject Canvas;
+    public GameObject FollowTextGameObject;
 
-  public GameObject FadeOverlay;
+    public GameObject Canvas;
 
-  public GameObject TimeSelectionCanvas;
+    public GameObject FadeOverlay;
 
-  public bool Debug = true;
+    public GameObject TimeSelectionCanvas;
 
-  void Awake() {
-    PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
-    PrefabReferences.FollowText = FollowTextGameObject.GetComponent<FollowText>();
-    PrefabReferences.Canvas = Canvas;
-    PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
-    PrefabReferences.FadeOverlay = FadeOverlay;
+    public bool Debug = true;
 
-    Util.Debug = Debug;
-  }
+    void Awake() {
+      PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
+      PrefabReferences.FollowText = FollowTextGameObject.GetComponent<FollowText>();
+      PrefabReferences.Canvas = Canvas;
+      PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
+      PrefabReferences.FadeOverlay = FadeOverlay;
 
-  void Update() {
-    TimeManager.Update();
+      Util.Debug = Debug;
+    }
+
+    void Update() {
+      TimeManager.Update();
+    }
   }
 }

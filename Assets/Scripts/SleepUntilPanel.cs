@@ -4,173 +4,176 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Zenject;
 
-[DisallowMultipleComponent]
-public class SleepUntilPanel : Entity {
-  [Inject]
-  public IUtil Util;
+namespace johnfn {
 
-  [Inject]
-  public IPrefabReferences PrefabReferences;
+  [DisallowMultipleComponent]
+  public class SleepUntilPanel : Entity {
+    [Inject]
+    public IUtil Util;
 
-  public GameObject HourIndicator;
+    [Inject]
+    public IPrefabReferences PrefabReferences;
 
-  public GameObject MinuteIndicator;
+    public GameObject HourIndicator;
 
-  public GameObject AMPMIndicator;
+    public GameObject MinuteIndicator;
 
-  public Text TimeText;
+    public GameObject AMPMIndicator;
 
-  public List<GameObject> Indicators;
+    public Text TimeText;
 
-  public bool ActiveOnStart = false;
+    public List<GameObject> Indicators;
 
-  private GameObject _activeIndicator {
-    get {
-      return Indicators[_indicatorIndex];
+    public bool ActiveOnStart = false;
+
+    private GameObject _activeIndicator {
+      get {
+        return Indicators[_indicatorIndex];
+      }
     }
-  }
 
-  private int _targetTime {
-    get {
-      return _targetHour * 60 + _targetMinute + (_targetIsAM ? 0 : 60 * 12);
+    private int _targetTime {
+      get {
+        return _targetHour * 60 + _targetMinute + (_targetIsAM ? 0 : 60 * 12);
+      }
     }
-  }
 
-  private int _targetHour = 8;
+    private int _targetHour = 8;
 
-  private int _targetMinute = 0;
+    private int _targetMinute = 0;
 
-  private bool _targetIsAM = true;
+    private bool _targetIsAM = true;
 
-  private int _indicatorIndex;
+    private int _indicatorIndex;
 
-  public void Awake() {
-    _indicatorIndex = 0;
-    _targetHour = 8;
-    _targetMinute = 0;
-    _targetIsAM = true;
+    public void Awake() {
+      _indicatorIndex = 0;
+      _targetHour = 8;
+      _targetMinute = 0;
+      _targetIsAM = true;
 
-    Indicators = new List<GameObject> { HourIndicator, MinuteIndicator, AMPMIndicator };
-
-    gameObject.Hide();
-  }
-
-  public void Update() {
-    Debug.Log("Update sleep panel");
-
-    HandleKeyEvents();
-    Render();
-  }
-
-  public void Show() {
-    gameObject.Show();
-
-    EffectedByModes.SetMode(Mode.UsingUI);
-  }
-
-  public IEnumerator Hide() {
-    if (Util.Debug) {
-      gameObject.Hide();
-    } else {
-      var fadeImage = PrefabReferences.FadeOverlay.GetComponent<FadeOverlay>();
+      Indicators = new List<GameObject> { HourIndicator, MinuteIndicator, AMPMIndicator };
 
       gameObject.Hide();
-
-      yield return fadeImage.FadeInAndOut();
-
-      EffectedByModes.SetMode(Mode.Normal);
     }
-  }
 
-  private void Render() {
-    // Indicators
+    public void Update() {
+      Debug.Log("Update sleep panel");
 
-    for (var i = 0; i < Indicators.Count; i++) {
-      var image = Indicators[i].GetComponent<Image>();
+      HandleKeyEvents();
+      Render();
+    }
 
-      if (Indicators[i] == _activeIndicator) {
-        image.color = Color.red;
+    public void Show() {
+      gameObject.Show();
+
+      EffectedByModes.SetMode(Mode.UsingUI);
+    }
+
+    public IEnumerator Hide() {
+      if (Util.Debug) {
+        gameObject.Hide();
       } else {
-        image.color = Color.white;
+        var fadeImage = PrefabReferences.FadeOverlay.GetComponent<FadeOverlay>();
+
+        gameObject.Hide();
+
+        yield return fadeImage.FadeInAndOut();
+
+        EffectedByModes.SetMode(Mode.Normal);
       }
     }
 
-    // Time
+    private void Render() {
+      // Indicators
 
-    TimeText.text = TimeManager.MinutesSinceDawnToString(_targetTime);
-  }
+      for (var i = 0; i < Indicators.Count; i++) {
+        var image = Indicators[i].GetComponent<Image>();
 
-  private void HandleKeyEvents() {
-    if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-      _indicatorIndex = _indicatorIndex - 1;
-
-      if (_indicatorIndex < 0) {
-        _indicatorIndex = Indicators.Count - 1;
+        if (Indicators[i] == _activeIndicator) {
+          image.color = Color.red;
+        } else {
+          image.color = Color.white;
+        }
       }
+
+      // Time
+
+      TimeText.text = TimeManager.MinutesSinceDawnToString(_targetTime);
     }
 
-    if (Input.GetKeyDown(KeyCode.RightArrow)) {
-      _indicatorIndex = (_indicatorIndex + 1) % Indicators.Count;
-    }
+    private void HandleKeyEvents() {
+      if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+        _indicatorIndex = _indicatorIndex - 1;
 
-    if (Input.GetKeyDown(KeyCode.UpArrow)) {
-      // hour
-      if (_indicatorIndex == 0) {
-        _targetHour += 1;
+        if (_indicatorIndex < 0) {
+          _indicatorIndex = Indicators.Count - 1;
+        }
       }
 
-      // minute
-      if (_indicatorIndex == 1) {
-        _targetMinute += 15;
+      if (Input.GetKeyDown(KeyCode.RightArrow)) {
+        _indicatorIndex = (_indicatorIndex + 1) % Indicators.Count;
       }
 
-      if (_indicatorIndex == 2) {
-        _targetIsAM = !_targetIsAM;
+      if (Input.GetKeyDown(KeyCode.UpArrow)) {
+        // hour
+        if (_indicatorIndex == 0) {
+          _targetHour += 1;
+        }
+
+        // minute
+        if (_indicatorIndex == 1) {
+          _targetMinute += 15;
+        }
+
+        if (_indicatorIndex == 2) {
+          _targetIsAM = !_targetIsAM;
+        }
+
+        // cascading updates
+
+        if (_targetMinute > 59) {
+          _targetMinute = 0;
+          _targetHour += 1;
+        }
+
+        if (_targetHour > 11) {
+          _targetHour = 0;
+          _targetIsAM = !_targetIsAM;
+        }
       }
 
-      // cascading updates
+      if (Input.GetKeyDown(KeyCode.DownArrow)) {
+        // hour
+        if (_indicatorIndex == 0) {
+          _targetHour -= 1;
+        }
 
-      if (_targetMinute > 59) {
-        _targetMinute = 0;
-        _targetHour += 1;
+        // minute
+        if (_indicatorIndex == 1) {
+          _targetMinute -= 15;
+        }
+
+        if (_indicatorIndex == 2) {
+          _targetIsAM = !_targetIsAM;
+        }
+
+        // cascading updates
+
+        if (_targetMinute < 0) {
+          _targetMinute = 45;
+          _targetHour -= 1;
+        }
+
+        if (_targetHour < 0) {
+          _targetHour = 11;
+          _targetIsAM = !_targetIsAM;
+        }
       }
 
-      if (_targetHour > 11) {
-        _targetHour = 0;
-        _targetIsAM = !_targetIsAM;
+      if (Input.GetKeyDown(KeyCode.Return)) {
+        StartCoroutine(Hide());
       }
-    }
-
-    if (Input.GetKeyDown(KeyCode.DownArrow)) {
-      // hour
-      if (_indicatorIndex == 0) {
-        _targetHour -= 1;
-      }
-
-      // minute
-      if (_indicatorIndex == 1) {
-        _targetMinute -= 15;
-      }
-
-      if (_indicatorIndex == 2) {
-        _targetIsAM = !_targetIsAM;
-      }
-
-      // cascading updates
-
-      if (_targetMinute < 0) {
-        _targetMinute = 45;
-        _targetHour -= 1;
-      }
-
-      if (_targetHour < 0) {
-        _targetHour = 11;
-        _targetIsAM = !_targetIsAM;
-      }
-    }
-
-    if (Input.GetKeyDown(KeyCode.Return)) {
-      StartCoroutine(Hide());
     }
   }
 }

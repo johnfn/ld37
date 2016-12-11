@@ -1,49 +1,49 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.Reflection;
-using System;
 
-[Tiled2Unity.CustomTiledImporter]
-class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
-    public void HandleCustomProperties(GameObject gameObject,
-        IDictionary<string, string> props) {
+namespace johnfn {
+    [Tiled2Unity.CustomTiledImporter]
+    class MyCustomTiledImporter : Tiled2Unity.ICustomTiledImporter {
+        public void HandleCustomProperties(GameObject gameObject,
+            IDictionary<string, string> props) {
 
-        if (props.ContainsKey("Name")) {
-            var name = props["Name"];
+            if (props.ContainsKey("Name")) {
+                var name = props["Name"];
 
-            switch (name) {
-                case "Bed":
-                    var interactable = gameObject.AddComponent<Interactable>();
+                switch (name) {
+                    case "Bed":
+                        var interactable = gameObject.AddComponent<Interactable>();
 
-                    interactable.InteractVerb = Interactable.InteractTypes["Bed"].Verb;
-                    interactable.InteractType = Interactable.InteractTypes["Bed"].Type;
-                break;
-
-                default:
-                    Debug.Log("Unrecognized type " + name);
-
+                        interactable.InteractVerb = Interactable.InteractTypes["Bed"].Verb;
+                        interactable.InteractType = Interactable.InteractTypes["Bed"].Type;
                     break;
+
+                    default:
+                        Debug.Log("Unrecognized type " + name);
+
+                        break;
+                }
             }
+
+            // get component by string
+
+            /*
+            if (props.ContainsKey("AddComp")) {
+                Debug.Log("Look up " + props["AddComp"]);
+
+                var stringName = props["AddComp"];
+                Assembly asm = typeof(Entity).Assembly;
+                Type type = asm.GetType(props["AddComp"]);
+
+                gameObject.AddComponent(type);
+            }
+            */
         }
 
-        // get component by string
+        public void CustomizePrefab(GameObject prefab) {
+            Debug.Log(prefab.name);
 
-        /*
-        if (props.ContainsKey("AddComp")) {
-            Debug.Log("Look up " + props["AddComp"]);
-
-            var stringName = props["AddComp"];
-            Assembly asm = typeof(Entity).Assembly;
-            Type type = asm.GetType(props["AddComp"]);
-
-            gameObject.AddComponent(type);
+            prefab.name = "Woooo";
         }
-        */
-    }
-
-    public void CustomizePrefab(GameObject prefab) {
-        Debug.Log(prefab.name);
-
-        prefab.name = "Woooo";
     }
 }

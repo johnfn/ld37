@@ -1,43 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Mode {
-  Normal,
-  TextHoveroverThingy,
-  UsingUI,
-}
-
-[DisallowMultipleComponent]
-public class EffectedByModes : Entity {
-  public static List<EffectedByModes> AllModeGameObjects = new List<EffectedByModes>();
-
-  public static Mode CurrentMode = Mode.Normal;
-
-  public Mode ActiveFor = Mode.Normal;
-
-  public void Awake() {
-    AllModeGameObjects.Add(this);
+namespace johnfn {
+  public enum Mode {
+    Normal,
+    TextHoveroverThingy,
+    UsingUI,
   }
 
-  public static void SetMode(Mode newMode) {
-    EffectedByModes.CurrentMode = newMode;
+  [DisallowMultipleComponent]
+  public class EffectedByModes : Entity {
+    public static List<EffectedByModes> AllModeGameObjects = new List<EffectedByModes>();
 
-    foreach (var obj in EffectedByModes.AllModeGameObjects) {
-      var isActive = obj.ActiveFor == newMode;
+    public static Mode CurrentMode = Mode.Normal;
 
-      foreach (var comp in obj.GetComponents<MonoBehaviour>()) {
-        /*
+    public Mode ActiveFor = Mode.Normal;
 
-        // I don't get it...
+    public void Awake() {
+      AllModeGameObjects.Add(this);
+    }
 
-        if (comp is Renderer || comp is CanvasRenderer) {
-          Debug.Log("???");
+    public static void SetMode(Mode newMode) {
+      EffectedByModes.CurrentMode = newMode;
 
-          continue;
+      foreach (var obj in EffectedByModes.AllModeGameObjects) {
+        var isActive = obj.ActiveFor == newMode;
+
+        foreach (var comp in obj.GetComponents<MonoBehaviour>()) {
+          /*
+
+          // I don't get it...
+
+          if (comp is Renderer || comp is CanvasRenderer) {
+            Debug.Log("???");
+
+            continue;
+          }
+          */
+
+          comp.enabled = isActive;
         }
-        */
-
-        comp.enabled = isActive;
       }
     }
   }

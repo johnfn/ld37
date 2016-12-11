@@ -2,93 +2,96 @@ using UnityEngine;
 using System.Collections.Generic;
 using Zenject;
 
-interface ICanPressSpace {
-  /**
-   * returns true if we can't interact with it any more
-   */
-  bool PressSpace();
-}
+namespace johnfn {
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(PhysicsController2D))]
-public class ControlledByKeyboard : Entity {
-  private PhysicsController2D _controller;
-
-  private Interactor _interactor;
-
-  private List<ICanPressSpace> _things;
-
-  [Inject]
-  public IPrefabReferences PrefabReferences { get; set; }
-
-  void Awake() {
-    _controller = GetComponentSafe<PhysicsController2D>();
-    _interactor = GetComponentSafe<Interactor>();
-    _things = new List<ICanPressSpace>();
+  interface ICanPressSpace {
+    /**
+    * returns true if we can't interact with it any more
+    */
+    bool PressSpace();
   }
 
-  void Update() {
-    if (Input.GetKey(KeyCode.D)) {
-      _controller.AddHorizontalForce(0.5f);
+  [DisallowMultipleComponent]
+  [RequireComponent(typeof(PhysicsController2D))]
+  public class ControlledByKeyboard : Entity {
+    private PhysicsController2D _controller;
+
+    private Interactor _interactor;
+
+    private List<ICanPressSpace> _things;
+
+    [Inject]
+    public IPrefabReferences PrefabReferences { get; set; }
+
+    void Awake() {
+      _controller = GetComponentSafe<PhysicsController2D>();
+      _interactor = GetComponentSafe<Interactor>();
+      _things = new List<ICanPressSpace>();
     }
 
-    if (Input.GetKey(KeyCode.A)) {
-      _controller.AddHorizontalForce(-0.5f);
-    }
+    void Update() {
+      if (Input.GetKey(KeyCode.D)) {
+        _controller.AddHorizontalForce(0.5f);
+      }
 
-    if (Input.GetKey(KeyCode.W)) {
-      _controller.AddVerticalForce(0.5f);
-    }
+      if (Input.GetKey(KeyCode.A)) {
+        _controller.AddHorizontalForce(-0.5f);
+      }
 
-    if (Input.GetKey(KeyCode.S)) {
-      _controller.AddVerticalForce(-0.5f);
-    }
+      if (Input.GetKey(KeyCode.W)) {
+        _controller.AddVerticalForce(0.5f);
+      }
 
-    if (Input.GetKeyDown(KeyCode.Space)) {
-      // Try to find something to interact with
+      if (Input.GetKey(KeyCode.S)) {
+        _controller.AddVerticalForce(-0.5f);
+      }
 
-      var interacted = false;
+      if (Input.GetKeyDown(KeyCode.Space)) {
+        // Try to find something to interact with
 
-      if (_things.Count > 0) {
-        var thing = _things[0];
-        var result = thing.PressSpace();
+        var interacted = false;
 
-        if (result) {
-          _things.Remove(thing);
-        }
+        if (_things.Count > 0) {
+          var thing = _things[0];
+          var result = thing.PressSpace();
 
-        interacted = true;
-      } else {
-        // fail
+          if (result) {
+            _things.Remove(thing);
+          }
 
-        if (!interacted) {
-          Interact();
+          interacted = true;
+        } else {
+          // fail
+
+          if (!interacted) {
+            Interact();
+          }
         }
       }
     }
-  }
 
-  private void Interact() {
-    var target = _interactor.GetTarget();
+    private void Interact() {
+      var target = _interactor.GetTarget();
 
-    if (!target) {
-      var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
+      if (!target) {
+        var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
 
-      _things.Add(result);
-      return;
-    }
+        _things.Add(result);
+        return;
+      }
 
-    switch (target.InteractType) {
-      case InteractableTypes.BED:
-        var panel = PrefabReferences.TimeSelectionCanvas.GetComponent<SleepUntilPanel>();
+      switch (target.InteractType) {
+        case InteractableTypes.BED:
+          var panel = PrefabReferences.TimeSelectionCanvas.GetComponent<SleepUntilPanel>();
 
-        panel.Show();
+          panel.Show();
 
-        break;
-      default:
-        Debug.LogError("Unknown interact type!");
+          break;
+        default:
+          Debug.LogError("Unknown interact type!");
 
-        break;
+          break;
+      }
     }
   }
 }

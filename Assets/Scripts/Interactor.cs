@@ -1,34 +1,36 @@
 using UnityEngine;
 using Zenject;
 
-[DisallowMultipleComponent]
-public class Interactor : Entity {
-  [Inject]
-  public IGroups Groups { get; set; }
+namespace johnfn {
+  [DisallowMultipleComponent]
+  public class Interactor : Entity {
+    [Inject]
+    public IGroups Groups { get; set; }
 
-  [Inject]
-  public IPrefabReferences PrefabReferences;
+    [Inject]
+    public IPrefabReferences PrefabReferences;
 
-  public float DistanceToInteract = 2f;
+    public float DistanceToInteract = 2f;
 
-  private InteractableIcon _icon;
+    private InteractableIcon _icon;
 
-  private Interactable currentTarget = null;
+    private Interactable currentTarget = null;
 
-  void Awake() {
-    _icon = Instantiate(PrefabReferences.InteractableIcon, transform.position, Quaternion.identity);
-  }
+    void Awake() {
+      _icon = Instantiate(PrefabReferences.InteractableIcon, transform.position, Quaternion.identity);
+    }
 
-  void Update() {
-    var closest = Groups.InteractableClosestTo(gameObject);
-    var distance = Util.Distance(closest.gameObject, gameObject);
+    void Update() {
+      var closest = Groups.InteractableClosestTo(gameObject);
+      var distance = Util.Distance(closest.gameObject, gameObject);
 
-    currentTarget = distance < DistanceToInteract ? closest : null;
+      currentTarget = distance < DistanceToInteract ? closest : null;
 
-    _icon.SetTarget(currentTarget);
-  }
+      _icon.SetTarget(currentTarget);
+    }
 
-  public Interactable GetTarget() {
-    return currentTarget;
+    public Interactable GetTarget() {
+      return currentTarget;
+    }
   }
 }
