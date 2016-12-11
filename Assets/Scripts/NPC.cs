@@ -4,6 +4,8 @@ using Zenject;
 
 namespace johnfn {
   public enum DesireType {
+    Walk,
+
     TalkToRec,
     TalkToYou,
     LeaveHotel,
@@ -18,16 +20,12 @@ namespace johnfn {
     // (get it)
   }
 
-  public struct TimeSpan {
-    public int Start;
-
-    public int Stop;
-  }
-
   public struct Desire {
     public TimeSpan TimeSpan;
 
     public DesireType Type;
+
+    public Vector2 Location;
   }
 
   [DisallowMultipleComponent]
@@ -40,7 +38,8 @@ namespace johnfn {
 
     public List<Desire> Desires = new List<Desire> {
       new Desire {
-        Type = DesireType.TalkToRec,
+        Type = DesireType.Walk,
+        Location = new Vector2(4f, 4f), // TODO - totally random lloll
         TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
       }
     };
@@ -52,9 +51,7 @@ namespace johnfn {
     }
 
     void Start() {
-      CalculateAllOfTimeAndSpace();
-
-      var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(4f, 4f));
+      var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(1f, 1f));
 
       Debug.Log("HEllo!");
       Debug.Log(result.Count);
@@ -64,46 +61,18 @@ namespace johnfn {
       }
     }
 
-    private void CalculateAllOfTimeAndSpace() {
-      // Oh my god
-    }
-
-    public void Update() {
-      var currentDesire = GetRelevantDesire();
-
-      switch (currentDesire) {
-        case DesireType.TalkToRec:
-
-          break;
-
-        case DesireType.TalkToYou:
-          Debug.Log("I wanna talk to you.");
-
-          break;
-
-        case DesireType.Zen:
-
-          break;
-
-        default:
-          Debug.Log("NPC doesn't know what to do!");
-
-          break;
-      }
-    }
-
-    public DesireType GetRelevantDesire() {
-      var currentTime = _timeManager.MinutesSinceMidnight;
-
+    public Desire GetRelevantDesire(int currentTime) {
       foreach (var desire in Desires) {
         if (desire.TimeSpan.Start < currentTime && desire.TimeSpan.Stop >= currentTime) {
-          return desire.Type;
+          return desire;
         }
       }
 
       // none found...
 
-      return DesireType.Zen;
+      return new Desire {
+        Type = DesireType.Zen
+      };
     }
   }
 }

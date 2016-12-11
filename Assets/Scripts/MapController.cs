@@ -144,6 +144,18 @@ namespace johnfn {
             ExpandedFromHereYet = false,
           };
 
+          if (neighborPosition.x < 0 || neighborPosition.y < 0 ||
+              neighborPosition.x >= mapWidth || neighborPosition.y >= mapHeight) {
+
+            Debug.Log(neighborPosition.x + " " + neighborPosition.y);
+
+            continue;
+          }
+
+          if (HasWall[(int) neighborPosition.x, (int) neighborPosition.y]) {
+            continue;
+          }
+
           if (neighborLookup == null) {
             aStarNodes.Add(newNode);
           } else if (neighborLookup.Distance > neighborDistance) {
