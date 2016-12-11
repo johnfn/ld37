@@ -61,8 +61,6 @@ namespace johnfn {
     }
 
     public void Update() {
-      Debug.Log("Update sleep panel");
-
       HandleKeyEvents();
       Render();
     }
@@ -178,7 +176,7 @@ namespace johnfn {
         }
       }
 
-      if (Input.GetKeyDown(KeyCode.Return)) {
+      if (Input.GetKeyDown(KeyCode.Space)) {
         StartCoroutine(GoToSleep());
       }
     }

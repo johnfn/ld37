@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace johnfn {
@@ -41,14 +42,28 @@ namespace johnfn {
         return;
       }
 
-      EffectedByModes.SetMode(Mode.UsingUI);
-
+      EffectedByModes.SetMode(Mode.Dialog);
       gameObject.Show();
 
       _activeDialog = AllDialog[id];
 
-      SpeakerText.text = _activeDialog[0].Speaker;
-      DialogText.text = _activeDialog[0].Content;
+      StartCoroutine(HandleDialog());
+    }
+
+    private IEnumerator HandleDialog() {
+      for (var i = 0; i < _activeDialog.Count; i++) {
+        SpeakerText.text = _activeDialog[i].Speaker;
+        DialogText.text = _activeDialog[i].Content;
+
+        yield return new WaitForEndOfFrame();
+
+        while (!Input.GetKeyDown(KeyCode.Space)) {
+          yield return null;
+        }
+      }
+
+      EffectedByModes.SetMode(Mode.Normal);
+      gameObject.Hide();
     }
   }
 }
