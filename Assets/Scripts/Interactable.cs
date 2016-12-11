@@ -7,6 +7,7 @@ namespace johnfn {
     NOT_SET,
     BED,
     NPC_REC,
+    NPC_DRIFTER,
   }
 
   public struct InteractStuff {
@@ -18,8 +19,9 @@ namespace johnfn {
   public class Interactable : Entity {
     public static Dictionary<string, InteractStuff> InteractTypes = new Dictionary<string, InteractStuff>
     {
-      { "Bed", new InteractStuff { Verb = "Go to sleep", Type = InteractableTypes.BED } },
-      { "NPCRec", new InteractStuff { Verb = "Talk", Type = InteractableTypes.NPC_REC } }
+      { "Bed"       , new InteractStuff { Verb = "Go to sleep", Type = InteractableTypes.BED } },
+      { "NPCRec"    , new InteractStuff { Verb = "Talk"       , Type = InteractableTypes.NPC_REC } },
+      { "NPCDrifter", new InteractStuff { Verb = "Talk"       , Type = InteractableTypes.NPC_DRIFTER } }
     };
 
     [Inject]

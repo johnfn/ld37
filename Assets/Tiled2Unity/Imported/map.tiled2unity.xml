@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/10/2016 7:21:55 PM-->
+<!--Last exported: 12/10/2016 9:01:54 PM-->
 <Tiled2Unity version="1.0.9.3">
   <AssignMaterial mesh="mesh_0001" material="tileset" />
   <AssignMaterial mesh="mesh_tile_0021" material="tileset" />
@@ -35,6 +35,13 @@
     <GameObject name="NPC" x="0" y="0" z="0">
       <GameObject name="TileObject" x="0.96" y="-0.64" rotation="0" layer="" scaleX="1" scaleY="1">
         <Property name="Name" value="NPCRec" />
+        <TileObjectComponent width="0.32" height="0.32" />
+        <GameObject name="TileObject" x="0.16" y="0.16" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0022" sortingLayerName="Walls" sortingOrder="2" x="-0.16" y="0.16" />
+        </GameObject>
+      </GameObject>
+      <GameObject name="TileObject" x="0.64" y="-2.87999988" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="Name" value="NPCDrifter" />
         <TileObjectComponent width="0.32" height="0.32" />
         <GameObject name="TileObject" x="0.16" y="0.16" scaleX="1" scaleY="1">
           <GameObject name="tile_obj" copy="mesh_tile_0022" sortingLayerName="Walls" sortingOrder="2" x="-0.16" y="0.16" />

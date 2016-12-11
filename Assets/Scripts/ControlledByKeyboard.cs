@@ -91,6 +91,10 @@ namespace johnfn {
           PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(DialogID.NPCRec1);
 
           break;
+        case InteractableTypes.NPC_DRIFTER:
+          Debug.Log("Drifter!");
+
+          break;
         default:
           Debug.LogError("Unknown interact type!");
 

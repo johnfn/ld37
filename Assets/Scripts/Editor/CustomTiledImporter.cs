@@ -29,6 +29,15 @@ namespace johnfn {
                     }
                     break;
 
+                    case "NPCDrifter":
+                    {
+                        var interactable = gameObject.AddComponent<Interactable>();
+
+                        interactable.InteractVerb = Interactable.InteractTypes["NPCDrifter"].Verb;
+                        interactable.InteractType = Interactable.InteractTypes["NPCDrifter"].Type;
+                    }
+                    break;
+
                     default:
                         Debug.Log("Unrecognized type " + name);
 
