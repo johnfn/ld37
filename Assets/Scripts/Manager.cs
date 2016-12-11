@@ -18,13 +18,20 @@ public class Manager: MonoBehaviour {
 
   public GameObject Canvas;
 
+  public GameObject FadeOverlay;
+
   public GameObject TimeSelectionCanvas;
+
+  public bool Debug = true;
 
   void Awake() {
     PrefabReferences.InteractableIcon = InteractableIconGameObject.GetComponent<InteractableIcon>();
     PrefabReferences.FollowText = FollowTextGameObject.GetComponent<FollowText>();
     PrefabReferences.Canvas = Canvas;
     PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
+    PrefabReferences.FadeOverlay = FadeOverlay;
+
+    Util.Debug = Debug;
   }
 
   void Update() {

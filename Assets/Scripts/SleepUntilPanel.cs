@@ -1,9 +1,17 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Zenject;
 
 [DisallowMultipleComponent]
 public class SleepUntilPanel : Entity {
+  [Inject]
+  public IUtil Util;
+
+  [Inject]
+  public IPrefabReferences PrefabReferences;
+
   public GameObject HourIndicator;
 
   public GameObject MinuteIndicator;
@@ -44,7 +52,7 @@ public class SleepUntilPanel : Entity {
 
     Indicators = new List<GameObject> { HourIndicator, MinuteIndicator, AMPMIndicator };
 
-    gameObject.SetActive(ActiveOnStart);
+    gameObject.Hide();
   }
 
   public void Update() {
@@ -53,11 +61,19 @@ public class SleepUntilPanel : Entity {
   }
 
   public void Show() {
-    gameObject.SetActive(true);
+    gameObject.Show();
   }
 
-  public void Hide() {
-    gameObject.SetActive(false);
+  public IEnumerator Hide() {
+    if (Util.Debug) {
+      gameObject.Hide();
+    } else {
+      var fadeImage = PrefabReferences.FadeOverlay.GetComponent<FadeOverlay>();
+
+      gameObject.Hide();
+
+      yield return fadeImage.FadeInAndOut();
+    }
   }
 
   private void Render() {
@@ -148,7 +164,7 @@ public class SleepUntilPanel : Entity {
     }
 
     if (Input.GetKeyDown(KeyCode.Return)) {
-      Hide();
+      StartCoroutine(Hide());
     }
   }
 }

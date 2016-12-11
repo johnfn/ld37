@@ -17,9 +17,13 @@ public class Util : IUtil {
   public static float Distance(GameObject a, GameObject b) {
     return (a.transform.position - b.transform.position).magnitude;
   }
+
+  public bool Debug { get; set; }
 }
 
 public interface IUtil {
   float MapWidth { get; set; }
   float MapHeight { get; set; }
+
+  bool Debug { get; set; }
 }

@@ -9,6 +9,8 @@ public class PrefabReferences : IPrefabReferences {
 
   public GameObject TimeSelectionCanvas { get; set; }
 
+  public GameObject FadeOverlay { get; set; }
+
   public FollowText CreateFollowText(GameObject target, string text) {
     if (FollowText.Instance) {
       return null;
@@ -34,4 +36,6 @@ public interface IPrefabReferences {
   FollowText CreateFollowText(GameObject target, string text);
 
   GameObject TimeSelectionCanvas { get; set; }
+
+  GameObject FadeOverlay { get; set; }
 }
