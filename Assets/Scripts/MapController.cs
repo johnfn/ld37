@@ -60,8 +60,8 @@ namespace johnfn {
       maxX = allTransforms.Max(_ => _.localPosition.x);
       maxY = allTransforms.Max(_ => _.localPosition.y);
 
-      spriteWidth = allTransforms[0].gameObject.GetComponentInChildren<Renderer>().bounds.extents.x;
-      spriteHeight = allTransforms[0].gameObject.GetComponentInChildren<Renderer>().bounds.extents.y;
+      spriteWidth = allTransforms[0].gameObject.GetComponentInChildren<Renderer>().bounds.size.x;
+      spriteHeight = allTransforms[0].gameObject.GetComponentInChildren<Renderer>().bounds.size.y;
 
       mapWidth  = (int) ((maxX - x) / spriteWidth);
       mapHeight = (int) ((maxY - y) / spriteHeight);

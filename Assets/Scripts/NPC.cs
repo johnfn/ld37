@@ -82,7 +82,6 @@ namespace johnfn {
           break;
 
         case DesireType.Zen:
-          Debug.Log("Zennnn");
 
           break;
 
