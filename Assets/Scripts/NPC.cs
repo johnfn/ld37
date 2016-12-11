@@ -35,6 +35,9 @@ namespace johnfn {
     [Inject]
     private ITimeManager _timeManager;
 
+    [Inject]
+    private IPrefabReferences _prefabReferences;
+
     public List<Desire> Desires = new List<Desire> {
       new Desire {
         Type = DesireType.TalkToRec,
@@ -61,7 +64,9 @@ namespace johnfn {
 
       switch (currentDesire) {
         case DesireType.TalkToRec:
-          Debug.Log("I wanna talk to rec.");
+          var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(4f, 4f));
+
+          Debug.Log(result);
 
           break;
 

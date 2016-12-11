@@ -15,6 +15,8 @@ namespace johnfn {
 
     public GameObject Dialog { get; set; }
 
+    public MapController MapController { get; set; }
+
     public FollowText CreateFollowText(GameObject target, string text) {
       if (FollowText.Instance) {
         return null;
@@ -44,5 +46,7 @@ namespace johnfn {
     GameObject FadeOverlay { get; set; }
 
     GameObject Dialog { get; set; }
+
+    MapController MapController { get; set; }
   }
 }

@@ -26,6 +26,8 @@ namespace johnfn {
 
     public GameObject Dialog;
 
+    public GameObject MapController;
+
     public bool Debug = true;
 
     void Awake() {
@@ -35,6 +37,7 @@ namespace johnfn {
       PrefabReferences.TimeSelectionCanvas = TimeSelectionCanvas;
       PrefabReferences.FadeOverlay = FadeOverlay;
       PrefabReferences.Dialog = Dialog;
+      PrefabReferences.MapController = MapController.GetComponent<MapController>();
 
       Util.Debug = Debug;
     }

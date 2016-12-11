@@ -10,8 +10,6 @@ namespace johnfn {
             if (props.ContainsKey("Name")) {
                 var name = props["Name"];
 
-                Debug.Log("Add:: " + name);
-
                 switch (name) {
                     case "Bed":
                     {
