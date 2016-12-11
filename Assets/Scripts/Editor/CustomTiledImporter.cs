@@ -12,10 +12,21 @@ namespace johnfn {
 
                 switch (name) {
                     case "Bed":
+                    {
                         var interactable = gameObject.AddComponent<Interactable>();
 
                         interactable.InteractVerb = Interactable.InteractTypes["Bed"].Verb;
                         interactable.InteractType = Interactable.InteractTypes["Bed"].Type;
+                    }
+                    break;
+
+                    case "NPCRec":
+                    {
+                        var interactable = gameObject.AddComponent<Interactable>();
+
+                        interactable.InteractVerb = Interactable.InteractTypes["NPCRec"].Verb;
+                        interactable.InteractType = Interactable.InteractTypes["NPCRec"].Type;
+                    }
                     break;
 
                     default:

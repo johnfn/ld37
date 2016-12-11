@@ -85,8 +85,6 @@ namespace johnfn {
 
         Time.SetCurrentTime(_targetTime);
 
-        // TODO - set time!
-
         yield return fadeImage.FadeIn();
 
         EffectedByModes.SetMode(Mode.Normal);

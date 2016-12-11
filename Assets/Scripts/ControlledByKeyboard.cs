@@ -87,6 +87,9 @@ namespace johnfn {
           panel.Show();
 
           break;
+        case InteractableTypes.NPC_REC:
+
+          break;
         default:
           Debug.LogError("Unknown interact type!");
 
