@@ -27,6 +27,9 @@ namespace johnfn {
   public struct NPCAtTime {
     public Entity NPC;
 
+    /**
+     * Where the NPC started in this time slice
+     */
     public Vector2 Position;
 
     public ActionType Action;
@@ -44,6 +47,9 @@ namespace johnfn {
   public class TimelineManager: MonoBehaviour {
     [Inject]
     public ITimeManager _timeManager;
+
+    [Inject]
+    private IPrefabReferences _prefabReferences;
 
     public List<TimeSlice> Timeline = new List<TimeSlice>();
 
@@ -119,6 +125,8 @@ namespace johnfn {
         return;
       }
 
+      SlicesProcessed.Add(relevantTimeSlice.TimeSpan);
+
       // A new slice has started.
 
       // TODO - Find any running coroutines and kill them.
@@ -140,8 +148,21 @@ namespace johnfn {
     }
 
     public IEnumerator WalkNPCCo(NPCAtTime npcAction) {
-      while (true) {
-        npcAction.NPC.transform.Translate(new Vector3(0.01f * Time.deltaTime, 0f, 0f));
+      var npc = npcAction.NPC;
+      var movementSpeed = 0.3f;
+      var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.WalkingAction.Destination);
+
+      while (path.Count > 0) {
+        var nextCell = path.FirstOrDefault();
+
+        if (Vector2.Distance(nextCell, npc.transform.position) < movementSpeed * 1.5f) {
+          path.Remove(nextCell);
+          continue;
+        }
+
+        var moveVector = (nextCell - (Vector2) npc.transform.position).normalized * movementSpeed * Time.deltaTime;
+
+        npcAction.NPC.transform.Translate(moveVector);
 
         yield return null;
       }

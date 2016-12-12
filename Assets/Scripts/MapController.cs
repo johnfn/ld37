@@ -96,8 +96,6 @@ namespace johnfn {
       var start = WorldToMapPos(startWorld);
       var goal  = WorldToMapPos(stopWorld);
 
-      Debug.Log("Go");
-
       var aStarNodes = new List<AStarNode> {
         new AStarNode {
           Distance = 1,
@@ -172,14 +170,11 @@ namespace johnfn {
         end
       };
 
-      Debug.Log("!!" + aStarNodes.Count);
-
       while (result.Last().Position != start) {
-        Debug.Log("Add" + result.Last().Position);
         result.Add(result.Last().CameFrom);
       }
 
-      return result.Select(_ => MapToWorldPos(_.Position)).ToList();
+      return result.Select(_ => MapToWorldPos(_.Position)).Reverse().ToList();
     }
   }
 }

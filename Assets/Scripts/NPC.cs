@@ -39,7 +39,7 @@ namespace johnfn {
     public List<Desire> Desires = new List<Desire> {
       new Desire {
         Type = DesireType.Walk,
-        Location = new Vector2(4f, 4f), // TODO - totally random lloll
+        Location = new Vector2(4f, -2f), // TODO - totally random lloll
         TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
       }
     };
@@ -51,14 +51,7 @@ namespace johnfn {
     }
 
     void Start() {
-      var result = _prefabReferences.MapController.PathFind(transform.position, (Vector2) transform.position + new Vector2(1f, 1f));
 
-      Debug.Log("HEllo!");
-      Debug.Log(result.Count);
-
-      foreach (var vector in result) {
-        GameObject.Instantiate(_prefabReferences.DebugTile, vector, Quaternion.identity);
-      }
     }
 
     public Desire GetRelevantDesire(int currentTime) {
