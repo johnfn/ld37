@@ -5,6 +5,7 @@ using Zenject;
 namespace johnfn {
   public enum InteractableTypes {
     NOT_SET,
+    YOU, // double purposed this list for people to talk with
     BED,
     NPC_REC,
     NPC_DRIFTER,

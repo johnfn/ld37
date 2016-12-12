@@ -6,8 +6,7 @@ namespace johnfn {
   public enum DesireType {
     Walk,
 
-    TalkToRec,
-    TalkToYou,
+    WalkToSomeone,
     LeaveHotel,
     EnterHotel,
 
@@ -26,6 +25,8 @@ namespace johnfn {
     public DesireType Type;
 
     public Vector2 Destination;
+
+    public InteractableTypes PersonIWannaTalkTo;
   }
 
   [DisallowMultipleComponent]
@@ -38,8 +39,8 @@ namespace johnfn {
 
     public List<Desire> Desires = new List<Desire> {
       new Desire {
-        Type = DesireType.Walk,
-        Destination = new Vector2(5f, -3f), // TODO - totally random lloll
+        Type = DesireType.WalkToSomeone,
+        PersonIWannaTalkTo = InteractableTypes.NPC_REC,
         TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
       }
     };

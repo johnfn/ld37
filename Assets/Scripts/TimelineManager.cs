@@ -40,6 +40,9 @@ namespace johnfn {
     [Inject]
     private IPrefabReferences _prefabReferences;
 
+    [Inject]
+    private IGroups _groups;
+
     public List<TimeSlice> Timeline = new List<TimeSlice>();
 
     public HashSet<TimeSpan> SlicesProcessed = new HashSet<TimeSpan>();
@@ -123,6 +126,12 @@ namespace johnfn {
               newNpcAtTime.Position = lastNpcAtTime.Desire.Destination;
 
               break;
+            case DesireType.WalkToSomeone:
+              var desiredPerson = _groups.Interactables.Find(_ => _.InteractType == lastNpcAtTime.Desire.PersonIWannaTalkTo);
+
+              newNpcAtTime.Position = (Vector2) desiredPerson.transform.position + new Vector2(0.32f, 0f);
+
+              break;
             default:
               Debug.Log("Don't know how to propagate desire forward in time " + lastNpcAtTime.Desire.Type);
 
@@ -188,9 +197,25 @@ namespace johnfn {
             break;
 
           case DesireType.Walk:
-            StartCoroutineEx(WalkNPCCo(npcAction));
+          {
+            var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
+
+            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path));
 
             break;
+          }
+
+          case DesireType.WalkToSomeone:
+          {
+            var person = npcAction.Desire.PersonIWannaTalkTo;
+            var desiredPerson = _groups.Interactables.Find(_ => _.InteractType == person);
+            var destPos = (Vector2) desiredPerson.transform.position + new Vector2(0.32f, 0f);
+            var path = _prefabReferences.MapController.PathFind(npc.transform.position, destPos);
+
+            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path));
+
+            break;
+          }
         }
       }
     }
@@ -209,16 +234,14 @@ namespace johnfn {
       ActiveCoroutines.Remove(runningCoroutine);
     }
 
-    public IEnumerator WalkNPCCo(NPCAtTime npcAction) {
-      var npc = npcAction.NPC;
+    public IEnumerator WalkNPCCo(Entity npc, List<Vector2> path) {
       var movementSpeed = 0.5f;
-      var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
 
       while (path.Count > 0) {
         var nextCell = path.FirstOrDefault();
 
         if (Vector2.Distance(nextCell, npc.transform.position) < movementSpeed * Time.deltaTime * 2) {
-          npcAction.NPC.transform.position = nextCell;
+          npc.transform.position = nextCell;
 
           path.Remove(nextCell);
 
@@ -227,10 +250,11 @@ namespace johnfn {
 
         var moveVector = (nextCell - (Vector2) npc.transform.position).normalized * movementSpeed * Time.deltaTime;
 
-        npcAction.NPC.transform.Translate(moveVector);
+        npc.transform.Translate(moveVector);
 
         yield return null;
       }
     }
+
   }
 }
