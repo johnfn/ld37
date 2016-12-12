@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using System.Collections;
 using System;
 
 namespace johnfn {
@@ -20,6 +20,9 @@ namespace johnfn {
 
       for (int i = 0; i < v.Length; i++) {
         if (v[i].GetType().ToString().Contains("Generic.List")) {
+          if (v[i] is IEnumerable) {
+
+          }
           var result = "[";
 
           foreach (var x in (v[i] as IEnumerable<object>)) {

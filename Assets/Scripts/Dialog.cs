@@ -11,6 +11,7 @@ namespace johnfn {
 
   public struct DialogID {
     public InteractableTypes Speaker;
+    public InteractableTypes OtherSpeaker;
     public TimeSpan TimeSpan;
   }
 
@@ -20,6 +21,7 @@ namespace johnfn {
       {
         new DialogID {
           Speaker = InteractableTypes.NPC_REC,
+          OtherSpeaker = InteractableTypes.YOU,
           TimeSpan = new TimeSpan { Start = 0 * 60, Stop = 8 * 60 }
         },
         new List<DialogElement> {
@@ -33,6 +35,7 @@ namespace johnfn {
       {
         new DialogID {
           Speaker = InteractableTypes.NPC_REC,
+          OtherSpeaker = InteractableTypes.YOU,
           TimeSpan = new TimeSpan { Start = 8 * 60, Stop = 16 * 60 }
         },
         new List<DialogElement> {
@@ -43,6 +46,18 @@ namespace johnfn {
         }
       },
 
+      {
+        new DialogID {
+          Speaker = InteractableTypes.NPC_REC,
+          OtherSpeaker = InteractableTypes.NPC_DRIFTER,
+          TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 16 * 60 }
+        },
+        new List<DialogElement> {
+          new DialogElement { Speaker = "NPC_REC", Content = "What can I do for you?" },
+          new DialogElement { Speaker = "NPC_DRIFTER", Content = "Quite honestly, I doubt you can do anything at all." },
+          new DialogElement { Speaker = "NPC_REC", Content = "Haha... What?" },
+        }
+      },
     };
 
     public Text DialogText;
@@ -55,12 +70,20 @@ namespace johnfn {
       gameObject.Hide();
     }
 
-    public void StartDialog(InteractableTypes guy, int time) {
+    public static List<DialogElement> GetDialog(InteractableTypes guy, InteractableTypes otherGuy, int time) {
       foreach (KeyValuePair<DialogID, List<DialogElement>> entry in AllDialog) {
-        if (entry.Key.TimeSpan.Contains(time) && entry.Key.Speaker == guy) {
-          _activeDialog = entry.Value;
+        if (entry.Key.TimeSpan.Contains(time) &&
+            (entry.Key.Speaker == guy && entry.Key.OtherSpeaker == otherGuy) ||
+            (entry.Key.Speaker == otherGuy && entry.Key.OtherSpeaker == guy)) {
+          return entry.Value;
         }
       }
+
+      return null;
+    }
+
+    public void StartDialog(InteractableTypes guy, InteractableTypes otherGuy, int time) {
+      _activeDialog = GetDialog(guy, otherGuy, time);
 
       if (_activeDialog == null) {
         return;

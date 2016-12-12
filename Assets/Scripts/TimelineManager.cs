@@ -24,6 +24,8 @@ namespace johnfn {
     public Vector2 Position;
 
     public Desire Desire;
+
+    public List<InteractableTypes> PeopleTalkedTo;
   }
 
   public class TimeSlice {
@@ -78,6 +80,7 @@ namespace johnfn {
             NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
             Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
             Desire = NPC.GetRelevantDesire(0),
+            PeopleTalkedTo = new List<InteractableTypes>()
           };
 
           initialConditions.Add(npcAtTime);
@@ -105,18 +108,24 @@ namespace johnfn {
         // Calculate a new state for each NPC based on the old one
 
         foreach (var NPC in NPC.NPCs) {
-          var desire = NPC.GetRelevantDesire(time);
-          var newNpcAtTime = new NPCAtTime {
-            NPC = NPC,
-            Desire = NPC.GetRelevantDesire(time)
-          };
-
           // Figure out if previous time slice was successful!
 
           var lastNpcAtTime = Timeline.Last().NPCsAndActions.Find(_ => _.NPC == NPC);
+          var desire = NPC.GetRelevantDesire(time);
+          var newNpcAtTime = new NPCAtTime {
+            NPC = NPC,
+            Desire = NPC.GetRelevantDesire(time),
+            PeopleTalkedTo = lastNpcAtTime.PeopleTalkedTo,
+          };
 
           switch (lastNpcAtTime.Desire.Type) {
             case DesireType.Zen:
+              newNpcAtTime.Position = lastNpcAtTime.Position;
+
+              break;
+            case DesireType.Talk:
+              // TODO - Actually see if they were able to talk!
+
               newNpcAtTime.Position = lastNpcAtTime.Position;
 
               break;
@@ -196,6 +205,12 @@ namespace johnfn {
 
             break;
 
+          case DesireType.Talk:
+          {
+            StartCoroutineEx(TalkNPCCo(npcAction));
+            break;
+          }
+
           case DesireType.Walk:
           {
             var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
@@ -232,6 +247,19 @@ namespace johnfn {
       yield return runningCoroutine;
 
       ActiveCoroutines.Remove(runningCoroutine);
+    }
+
+    public IEnumerator TalkNPCCo(NPCAtTime npcAction) {
+      var guy1 = npcAction.Desire.PersonIWannaTalkTo;
+      var guy2 = npcAction.NPC.GetComponent<Interactable>().InteractType;
+
+      var dialog = Dialog.GetDialog(guy1, guy2, _timeManager.MinutesSinceMidnight);
+
+      Log(guy1, guy2);
+
+      Debug.Log(dialog[0].Content);
+
+      yield return null;
     }
 
     public IEnumerator WalkNPCCo(Entity npc, List<Vector2> path) {

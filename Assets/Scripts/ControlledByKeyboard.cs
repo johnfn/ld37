@@ -91,7 +91,7 @@ namespace johnfn {
 
           break;
         case InteractableTypes.NPC_REC:
-          PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(InteractableTypes.NPC_REC, TimeManager.MinutesSinceMidnight);
+          PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(InteractableTypes.NPC_REC, InteractableTypes.YOU, TimeManager.MinutesSinceMidnight);
 
           break;
         case InteractableTypes.NPC_DRIFTER:

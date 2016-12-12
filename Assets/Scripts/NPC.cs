@@ -5,6 +5,7 @@ using Zenject;
 namespace johnfn {
   public enum DesireType {
     Walk,
+    Talk,
 
     WalkToSomeone,
     LeaveHotel,
@@ -41,7 +42,13 @@ namespace johnfn {
       new Desire {
         Type = DesireType.WalkToSomeone,
         PersonIWannaTalkTo = InteractableTypes.NPC_REC,
-        TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
+        TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 6 * 60 + 15 },
+      },
+
+      new Desire {
+        Type = DesireType.Talk,
+        PersonIWannaTalkTo = InteractableTypes.NPC_REC,
+        TimeSpan = new TimeSpan { Start = 6 * 60 + 15, Stop = 6 * 60 + 30 }
       }
     };
 
