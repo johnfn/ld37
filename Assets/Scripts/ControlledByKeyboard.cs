@@ -23,6 +23,9 @@ namespace johnfn {
     [Inject]
     public IPrefabReferences PrefabReferences { get; set; }
 
+    [Inject]
+    public ITimeManager TimeManager { get; set; }
+
     void Awake() {
       _controller = GetComponentSafe<PhysicsController2D>();
       _interactor = GetComponentSafe<Interactor>();
@@ -88,7 +91,7 @@ namespace johnfn {
 
           break;
         case InteractableTypes.NPC_REC:
-          PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(DialogID.NPCRec1);
+          PrefabReferences.Dialog.GetComponent<Dialog>().StartDialog(InteractableTypes.NPC_REC, TimeManager.MinutesSinceMidnight);
 
           break;
         case InteractableTypes.NPC_DRIFTER:

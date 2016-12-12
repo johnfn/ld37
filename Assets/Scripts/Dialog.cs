@@ -9,22 +9,40 @@ namespace johnfn {
     public string Content;
   }
 
-  public enum DialogID {
-    NPCRec1,
-
-    None,
+  public struct DialogID {
+    public InteractableTypes Speaker;
+    public TimeSpan TimeSpan;
   }
 
   [DisallowMultipleComponent]
   public class Dialog : Entity {
     public static Dictionary<DialogID, List<DialogElement> > AllDialog = new Dictionary<DialogID, List<DialogElement> > {
-      { DialogID.NPCRec1, new List<DialogElement> {
-          new DialogElement { Speaker = "You", Content = "Umm, Hello." },
-          new DialogElement { Speaker = "Receptionist", Content = "Sup." },
-          new DialogElement { Speaker = "You", Content = "Nm nm just chillin u?" },
-          new DialogElement { Speaker = "Receptionist", Content = "Ima literally kill u rn." },
+      {
+        new DialogID {
+          Speaker = InteractableTypes.NPC_REC,
+          TimeSpan = new TimeSpan { Start = 0 * 60, Stop = 8 * 60 }
+        },
+        new List<DialogElement> {
+          new DialogElement { Speaker = "Receptionist", Content = "Good morning, Sam!" },
+          new DialogElement { Speaker = "Receptionist", Content = "You're up bright and early, aren't you?" },
+          new DialogElement { Speaker = "You", Content = "Grahhgh..." },
+          new DialogElement { Speaker = "Narrator", Content = "(You hate mornings.)" },
         }
-      }
+      },
+
+      {
+        new DialogID {
+          Speaker = InteractableTypes.NPC_REC,
+          TimeSpan = new TimeSpan { Start = 8 * 60, Stop = 16 * 60 }
+        },
+        new List<DialogElement> {
+          new DialogElement { Speaker = "Receptionist", Content = "Good afternoon, Sam!" },
+          new DialogElement { Speaker = "Receptionist", Content = "It looks like it's going to be another beautiful day!" },
+          new DialogElement { Speaker = "You", Content = "I have the strangest feeling of deja vu right now." },
+          new DialogElement { Speaker = "Narrator", Content = "(The receptionist is not quite sure what to say.)" },
+        }
+      },
+
     };
 
     public Text DialogText;
@@ -37,15 +55,19 @@ namespace johnfn {
       gameObject.Hide();
     }
 
-    public void StartDialog(DialogID id) {
-      if (id == DialogID.None) {
+    public void StartDialog(InteractableTypes guy, int time) {
+      foreach (KeyValuePair<DialogID, List<DialogElement>> entry in AllDialog) {
+        if (entry.Key.TimeSpan.Contains(time) && entry.Key.Speaker == guy) {
+          _activeDialog = entry.Value;
+        }
+      }
+
+      if (_activeDialog == null) {
         return;
       }
 
       EffectedByModes.SetMode(Mode.Dialog);
       gameObject.Show();
-
-      _activeDialog = AllDialog[id];
 
       StartCoroutine(HandleDialog());
     }
