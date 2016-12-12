@@ -26,14 +26,14 @@ namespace johnfn {
     public Desire Desire;
   }
 
-  public struct TimeSlice {
+  public class TimeSlice {
     public TimeSpan TimeSpan;
 
     public List<NPCAtTime> NPCsAndActions;
   }
 
   [DisallowMultipleComponent]
-  public class TimelineManager: MonoBehaviour {
+  public class TimelineManager: Entity {
     [Inject]
     public ITimeManager _timeManager;
 
@@ -46,39 +46,49 @@ namespace johnfn {
 
     public List<Coroutine> ActiveCoroutines = new List<Coroutine>();
 
+    public static TimelineManager Instance;
+
+    void Awake() {
+      Instance = this;
+    }
+
     void Start() {
       CalculateAllOfTimeAndSpace(0);
     }
 
+    public void GoBackwardsTo(int minutesSinceMidnight) {
+      SlicesProcessed = new HashSet<TimeSpan>(SlicesProcessed.Where(_ => _.Start < minutesSinceMidnight));
+    }
+
     // Calculate everything that the NPCs will eventually do.
 
-
     private void CalculateAllOfTimeAndSpace(int fromTime) {
-      Timeline = new List<TimeSlice>();
+      Timeline = Timeline.Take((int) Mathf.Floor(fromTime / 15)).ToList();
 
-      // TODO - this doesn't really work with fromTime at all, heh.
-      // Necessarily special case first time slice
+      if (Timeline.Count == 0) {
+        // Necessarily special case first time slice
 
-      var initialConditions = new List<NPCAtTime>();
+        var initialConditions = new List<NPCAtTime>();
 
-      foreach (var NPC in NPC.NPCs) {
-        var npcAtTime = new NPCAtTime {
-          NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
-          Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
-          Desire = NPC.GetRelevantDesire(0),
-        };
+        foreach (var NPC in NPC.NPCs) {
+          var npcAtTime = new NPCAtTime {
+            NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
+            Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
+            Desire = NPC.GetRelevantDesire(0),
+          };
 
-        initialConditions.Add(npcAtTime);
+          initialConditions.Add(npcAtTime);
+        }
+
+        Timeline.Add(new TimeSlice {
+          NPCsAndActions = initialConditions,
+          TimeSpan = new TimeSpan { Start = fromTime, Stop = fromTime + 15 }
+        });
       }
-
-      Timeline.Add(new TimeSlice {
-        NPCsAndActions = initialConditions,
-        TimeSpan = new TimeSpan { Start = fromTime, Stop = fromTime + 15 }
-      });
 
       // 15 minute resolution
 
-      for (var time = fromTime + 15; time < 12 * 60; time += 15) {
+      for (var time = fromTime + 15; time < 24 * 60; time += 15) {
         var processedSlice = SlicesProcessed.FirstOrDefault(_ => _.Contains(time));
 
         if (processedSlice != null) {
@@ -137,6 +147,9 @@ namespace johnfn {
       var currentTime = _timeManager.MinutesSinceMidnight;
       var relevantTimeSlice = Timeline.Find(_ => _.TimeSpan.Contains(currentTime));
 
+      if (relevantTimeSlice == null) {
+        Debug.Log("Oh no, this is bad!");
+      }
 
       if (SlicesProcessed.Contains(relevantTimeSlice.TimeSpan)) {
         // This slice is currently running.
@@ -156,6 +169,14 @@ namespace johnfn {
 
       // A new slice has started.
 
+      // Put every NPC in their correct place (this may be wrong)
+
+      foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
+        var npc = npcAction.NPC;
+
+        npc.transform.position = npcAction.Position;
+      }
+
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
         var npc = npcAction.NPC;
 
@@ -165,11 +186,25 @@ namespace johnfn {
             break;
 
           case DesireType.Walk:
-            ActiveCoroutines.Add(StartCoroutine(WalkNPCCo(npcAction)));
+            StartCoroutineEx(WalkNPCCo(npcAction));
 
             break;
         }
       }
+    }
+
+    public void StartCoroutineEx(IEnumerator co) {
+      StartCoroutine(StartCoroutineExHelper(co));
+    }
+
+    private IEnumerator StartCoroutineExHelper(IEnumerator co) {
+      Coroutine runningCoroutine = StartCoroutine(co);
+
+      ActiveCoroutines.Add(runningCoroutine);
+
+      yield return runningCoroutine;
+
+      ActiveCoroutines.Remove(runningCoroutine);
     }
 
     public IEnumerator WalkNPCCo(NPCAtTime npcAction) {

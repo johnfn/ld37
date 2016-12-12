@@ -20,7 +20,17 @@ namespace johnfn {
     }
 
     public void SetCurrentTime(float minutesSinceMidnight) {
-      _minutesSinceMidnight = minutesSinceMidnight;
+      if (minutesSinceMidnight > _minutesSinceMidnight) {
+        // Go forwards in time
+        _minutesSinceMidnight = minutesSinceMidnight;
+      } else {
+        // Go backwards in time
+        _minutesSinceMidnight = minutesSinceMidnight;
+
+        TimelineManager.Instance.GoBackwardsTo((int) _minutesSinceMidnight);
+
+        // currently the same lol
+      }
     }
 
     public static string MinutesSinceDawnToString(float minutes) {
