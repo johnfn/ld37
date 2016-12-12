@@ -53,7 +53,7 @@ namespace johnfn {
 
       Text.text = "";
 
-      for (var i = 0; i < text.Length; i++) {
+      for (var i = 0; i <= text.Length; i++) {
         Text.text = text.Substring(0, i);
 
         yield return new WaitForSeconds(0.1f);

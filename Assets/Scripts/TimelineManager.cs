@@ -34,6 +34,12 @@ namespace johnfn {
     public List<NPCAtTime> NPCsAndActions;
   }
 
+  public struct CoroutineAndTimeSpan {
+    public TimeSpan TimeSpan;
+
+    public Coroutine Coroutine;
+  }
+
   [DisallowMultipleComponent]
   public class TimelineManager: Entity {
     [Inject]
@@ -49,7 +55,7 @@ namespace johnfn {
 
     public HashSet<TimeSpan> SlicesProcessed = new HashSet<TimeSpan>();
 
-    public List<Coroutine> ActiveCoroutines = new List<Coroutine>();
+    public List<CoroutineAndTimeSpan> ActiveCoroutines = new List<CoroutineAndTimeSpan>();
 
     public static TimelineManager Instance;
 
@@ -180,11 +186,13 @@ namespace johnfn {
 
       // Find and kill old coroutines.
 
-      foreach (var co in ActiveCoroutines) {
-        StopCoroutine(co);
+      foreach (var pair in ActiveCoroutines) {
+        if (!pair.TimeSpan.Contains(currentTime)) {
+          StopCoroutine(pair.Coroutine);
+        }
       }
 
-      ActiveCoroutines = new List<Coroutine>();
+      ActiveCoroutines = new List<CoroutineAndTimeSpan>();
 
       // A new slice has started.
 
@@ -198,6 +206,7 @@ namespace johnfn {
 
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
         var npc = npcAction.NPC;
+        var timeSpan = relevantTimeSlice.TimeSpan;
 
         switch (npcAction.Desire.Type) {
           case DesireType.Zen:
@@ -206,7 +215,7 @@ namespace johnfn {
 
           case DesireType.Talk:
           {
-            StartCoroutineEx(TalkNPCCo(npcAction));
+            StartCoroutineEx(TalkNPCCo(npcAction), npcAction.Desire.TimeSpan);
             break;
           }
 
@@ -214,7 +223,7 @@ namespace johnfn {
           {
             var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
 
-            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path));
+            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path), npcAction.Desire.TimeSpan);
 
             break;
           }
@@ -226,7 +235,7 @@ namespace johnfn {
             var destPos = (Vector2) desiredPerson.transform.position + new Vector2(0.32f, 0f);
             var path = _prefabReferences.MapController.PathFind(npc.transform.position, destPos);
 
-            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path));
+            StartCoroutineEx(WalkNPCCo(npcAction.NPC, path), npcAction.Desire.TimeSpan);
 
             break;
           }
@@ -234,18 +243,21 @@ namespace johnfn {
       }
     }
 
-    public void StartCoroutineEx(IEnumerator co) {
-      StartCoroutine(StartCoroutineExHelper(co));
+    public void StartCoroutineEx(IEnumerator co, TimeSpan timeSpan) {
+      StartCoroutine(StartCoroutineExHelper(co, timeSpan));
     }
 
-    private IEnumerator StartCoroutineExHelper(IEnumerator co) {
+    private IEnumerator StartCoroutineExHelper(IEnumerator co, TimeSpan timeSpan) {
       Coroutine runningCoroutine = StartCoroutine(co);
 
-      ActiveCoroutines.Add(runningCoroutine);
+      ActiveCoroutines.Add(new CoroutineAndTimeSpan {
+        Coroutine = runningCoroutine,
+        TimeSpan = timeSpan
+      });
 
       yield return runningCoroutine;
 
-      ActiveCoroutines.Remove(runningCoroutine);
+      ActiveCoroutines = ActiveCoroutines.Where(_ => _.Coroutine != runningCoroutine).ToList();
     }
 
     public IEnumerator TalkNPCCo(NPCAtTime npcAction) {
@@ -266,7 +278,7 @@ namespace johnfn {
           followText = _prefabReferences.CreateFollowText(guy2Obj, element.Content, false);
         }
 
-        yield return StartCoroutineExHelper(followText.ShowTextHelperCo(element.Content));
+        yield return StartCoroutineExHelper(followText.ShowTextHelperCo(element.Content), npcAction.Desire.TimeSpan);
 
         Destroy(followText.gameObject);
       }
