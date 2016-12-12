@@ -77,6 +77,18 @@ public static class Extensions {
     };
   }
 
+  public static Vector2 Size(this GameObject target) {
+    var renderer = target.GetComponentInChildren<Renderer>();
+
+    return renderer.bounds.size;
+  }
+
+  public static float Width(this GameObject target) {
+    var renderer = target.GetComponentInChildren<Renderer>();
+
+    return renderer.bounds.size.x;
+  }
+
   public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source,
       Func<TSource, TKey> selector) {
       return source.MinBy(selector, null);

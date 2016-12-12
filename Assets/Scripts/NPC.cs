@@ -48,7 +48,7 @@ namespace johnfn {
       new Desire {
         Type = DesireType.Talk,
         PersonIWannaTalkTo = InteractableTypes.NPC_REC,
-        TimeSpan = new TimeSpan { Start = 6 * 60 + 15, Stop = 6 * 60 + 30 }
+        TimeSpan = new TimeSpan { Start = 6 * 60 + 15, Stop = 7 * 60 }
       }
     };
 

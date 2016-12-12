@@ -194,8 +194,6 @@ namespace johnfn {
         var npc = npcAction.NPC;
 
         npc.transform.position = npcAction.Position;
-
-        Log("Position to...", npcAction.Position);
       }
 
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
@@ -254,8 +252,8 @@ namespace johnfn {
       var guy1 = npcAction.Desire.PersonIWannaTalkTo;
       var guy2 = npcAction.NPC.GetComponent<Interactable>().InteractType;
 
-      var guy1Obj = _groups.Interactables.Find(_ => _.InteractType == guy1);
-      var guy2Obj = _groups.Interactables.Find(_ => _.InteractType == guy2);
+      var guy1Obj = _groups.Interactables.Find(_ => _.InteractType == guy1).gameObject;
+      var guy2Obj = _groups.Interactables.Find(_ => _.InteractType == guy2).gameObject;
 
       var dialog = Dialog.GetDialog(guy1, guy2, _timeManager.MinutesSinceMidnight);
 
@@ -263,12 +261,14 @@ namespace johnfn {
 
       foreach (var element in dialog) {
         if (element.Speaker == guy1.ToString()) {
-          Log("Guy 1 says", element.Content);
+          followText = _prefabReferences.CreateFollowText(guy1Obj, element.Content, false);
         } else {
-          Log("Guy 2 says", element.Content);
+          followText = _prefabReferences.CreateFollowText(guy2Obj, element.Content, false);
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return StartCoroutineExHelper(followText.ShowTextHelperCo(element.Content));
+
+        Destroy(followText.gameObject);
       }
 
       yield return null;

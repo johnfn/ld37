@@ -19,16 +19,15 @@ namespace johnfn {
 
     public GameObject DebugTile { get; set; }
 
-    public FollowText CreateFollowText(GameObject target, string text) {
-      if (FollowText.Instance) {
-        return null;
-      }
-
+    public FollowText CreateFollowText(GameObject target, string text, bool show = true) {
       var result = GameObject.Instantiate(FollowText, Vector3.zero, Quaternion.identity);
 
       result.transform.SetParent(Canvas.transform, false);
       result.GetComponent<FollowText>().Target = target;
-      result.GetComponent<FollowText>().ShowText("There's nothing there.");
+
+      if (show) {
+        result.GetComponent<FollowText>().ShowText(text);
+      }
 
       return result;
     }
@@ -41,7 +40,7 @@ namespace johnfn {
 
     GameObject Canvas { get; set; }
 
-    FollowText CreateFollowText(GameObject target, string text);
+    FollowText CreateFollowText(GameObject target, string text, bool show = false);
 
     GameObject TimeSelectionCanvas { get; set; }
 

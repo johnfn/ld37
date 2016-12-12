@@ -19,7 +19,9 @@ namespace johnfn {
       var o = "";
 
       for (int i = 0; i < v.Length; i++) {
-        if (v[i].GetType().ToString().Contains("Generic.List")) {
+        if (v[i] == null) {
+          o += "null ";
+        } else if (v[i].GetType().ToString().Contains("Generic.List")) {
           if (v[i] is IEnumerable) {
 
           }

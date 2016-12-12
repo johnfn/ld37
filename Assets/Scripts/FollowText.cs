@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace johnfn {
   [DisallowMultipleComponent]
   public class FollowText : Entity, ICanPressSpace {
-    public static FollowText Instance;
+    public static int FollowTextCount;
 
     public GameObject Target;
 
@@ -22,15 +22,15 @@ namespace johnfn {
     void Awake() {
       Text = GetComponent<Text>();
 
-      Instance = this;
+      FollowTextCount++;
     }
 
     void Start() {
-      TargetSize = Target.GetComponent<SpriteRenderer>().bounds.size;
+      TargetSize = Target.Size();
     }
 
     public void ShowText(string text) {
-      StartCoroutine(_typingCoroutine = ShowTextHelper("There's nothing there."));
+      StartCoroutine(_typingCoroutine = ShowTextHelperCo(text));
     }
 
     public bool PressSpace() {
@@ -42,13 +42,12 @@ namespace johnfn {
         return false;
       } else {
         Destroy(gameObject);
-        Instance = null;
 
         return true;
       }
     }
 
-    private IEnumerator ShowTextHelper(string text) {
+    public IEnumerator ShowTextHelperCo(string text) {
       _finishedTyping = false;
       _fullMessage = text;
 
@@ -68,6 +67,10 @@ namespace johnfn {
         Target.transform.position.x + TargetSize.x / 2 + 0.2f,
         Target.transform.position.y + TargetSize.y / 2
       );
+    }
+
+    void OnDestroy() {
+      FollowTextCount--;
     }
   }
 }

@@ -5,7 +5,7 @@ namespace johnfn {
   public class TimeManager : ITimeManager {
     private float _minutesSinceMidnight = 6 * 60;
 
-    public float ArbitarySpeedupAmount = 10f;
+    public float ArbitarySpeedupAmount = 3f;
 
     public string currentTime {
       get {

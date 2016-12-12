@@ -77,9 +77,11 @@ namespace johnfn {
       var target = _interactor.GetTarget();
 
       if (!target) {
-        var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
+        if (FollowText.FollowTextCount == 0) {
+          var result = PrefabReferences.CreateFollowText(gameObject, "There's nothing there.");
+          _things.Add(result);
+        }
 
-        _things.Add(result);
         return;
       }
 
