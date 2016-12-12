@@ -39,7 +39,7 @@ namespace johnfn {
     public List<Desire> Desires = new List<Desire> {
       new Desire {
         Type = DesireType.Walk,
-        Destination = new Vector2(4f, -2f), // TODO - totally random lloll
+        Destination = new Vector2(5f, -3f), // TODO - totally random lloll
         TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
       }
     };

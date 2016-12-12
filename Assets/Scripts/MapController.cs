@@ -92,9 +92,9 @@ namespace johnfn {
       );
     }
 
-    public List<Vector2> PathFind(Vector2 startWorld, Vector2 stopWorld) {
-      var start = WorldToMapPos(startWorld);
-      var goal  = WorldToMapPos(stopWorld);
+    public List<Vector2> PathFind(Vector2 startWorldPos, Vector2 stopWorldPos) {
+      var start = WorldToMapPos(startWorldPos);
+      var goal  = WorldToMapPos(stopWorldPos);
 
       var aStarNodes = new List<AStarNode> {
         new AStarNode {
@@ -174,7 +174,12 @@ namespace johnfn {
         result.Add(result.Last().CameFrom);
       }
 
-      return result.Select(_ => MapToWorldPos(_.Position)).Reverse().ToList();
+      var worldPosResult = result.Select(_ => MapToWorldPos(_.Position)).Reverse().ToList();
+
+      worldPosResult.RemoveAt(worldPosResult.Count - 1);
+      worldPosResult.Add(stopWorldPos);
+
+      return worldPosResult;
     }
   }
 }

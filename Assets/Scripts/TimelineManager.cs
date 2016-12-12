@@ -103,7 +103,7 @@ namespace johnfn {
 
         foreach (var NPC in NPC.NPCs) {
           var desire = NPC.GetRelevantDesire(time);
-          var nextNpcAtTime = new NPCAtTime {
+          var newNpcAtTime = new NPCAtTime {
             NPC = NPC,
             Desire = NPC.GetRelevantDesire(time)
           };
@@ -114,13 +114,13 @@ namespace johnfn {
 
           switch (lastNpcAtTime.Desire.Type) {
             case DesireType.Zen:
-              nextNpcAtTime.Position = lastNpcAtTime.Position;
+              newNpcAtTime.Position = lastNpcAtTime.Position;
 
               break;
             case DesireType.Walk:
               // TODO - actually pathfind... somehow... lel
 
-              nextNpcAtTime.Position = lastNpcAtTime.Desire.Destination;
+              newNpcAtTime.Position = lastNpcAtTime.Desire.Destination;
 
               break;
             default:
@@ -129,7 +129,7 @@ namespace johnfn {
               break;
           }
 
-          npcsAndActions.Add(nextNpcAtTime);
+          npcsAndActions.Add(newNpcAtTime);
         }
 
         var newTimeSlice = new TimeSlice {
@@ -175,6 +175,8 @@ namespace johnfn {
         var npc = npcAction.NPC;
 
         npc.transform.position = npcAction.Position;
+
+        Log("Position to...", npcAction.Position);
       }
 
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
@@ -209,14 +211,17 @@ namespace johnfn {
 
     public IEnumerator WalkNPCCo(NPCAtTime npcAction) {
       var npc = npcAction.NPC;
-      var movementSpeed = 0.3f;
+      var movementSpeed = 0.5f;
       var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
 
       while (path.Count > 0) {
         var nextCell = path.FirstOrDefault();
 
-        if (Vector2.Distance(nextCell, npc.transform.position) < movementSpeed * 1.5f) {
+        if (Vector2.Distance(nextCell, npc.transform.position) < movementSpeed * Time.deltaTime * 2) {
+          npcAction.NPC.transform.position = nextCell;
+
           path.Remove(nextCell);
+
           continue;
         }
 
