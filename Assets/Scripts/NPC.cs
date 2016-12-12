@@ -25,7 +25,7 @@ namespace johnfn {
 
     public DesireType Type;
 
-    public Vector2 Location;
+    public Vector2 Destination;
   }
 
   [DisallowMultipleComponent]
@@ -39,7 +39,7 @@ namespace johnfn {
     public List<Desire> Desires = new List<Desire> {
       new Desire {
         Type = DesireType.Walk,
-        Location = new Vector2(4f, -2f), // TODO - totally random lloll
+        Destination = new Vector2(4f, -2f), // TODO - totally random lloll
         TimeSpan = new TimeSpan { Start = 6 * 60, Stop = 9 * 60 },
       }
     };

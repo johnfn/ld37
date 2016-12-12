@@ -15,15 +15,6 @@ namespace johnfn {
     }
   }
 
-  public enum ActionType {
-    Walking,
-    Standing,
-  }
-
-  public class WalkingAction {
-    public Vector2 Destination;
-  }
-
   public struct NPCAtTime {
     public Entity NPC;
 
@@ -32,9 +23,7 @@ namespace johnfn {
      */
     public Vector2 Position;
 
-    public ActionType Action;
-
-    public WalkingAction WalkingAction;
+    public Desire Desire;
   }
 
   public struct TimeSlice {
@@ -85,19 +74,15 @@ namespace johnfn {
           var npcAtTime = new NPCAtTime {
             NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
             Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
-            Action = ActionType.Standing,
           };
 
           switch (desire.Type) {
             case DesireType.Zen:
-              npcAtTime.Action = ActionType.Standing;
+              npcAtTime.Desire = desire;
 
               break;
             case DesireType.Walk:
-              npcAtTime.Action = ActionType.Walking;
-              npcAtTime.WalkingAction = new WalkingAction {
-                Destination = desire.Location
-              };
+              npcAtTime.Desire = desire;
 
               break;
           }
@@ -121,25 +106,32 @@ namespace johnfn {
       var relevantTimeSlice = Timeline.Find(_ => _.TimeSpan.Contains(currentTime));
 
       // This slice is currently running.
+
       if (SlicesProcessed.Contains(relevantTimeSlice.TimeSpan)) {
         return;
       }
 
       SlicesProcessed.Add(relevantTimeSlice.TimeSpan);
 
-      // A new slice has started.
+      // Find and kill old coroutines.
 
-      // TODO - Find any running coroutines and kill them.
+      foreach (var co in ActiveCoroutines) {
+        StopCoroutine(co);
+      }
+
+      ActiveCoroutines = new List<Coroutine>();
+
+      // A new slice has started.
 
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
         var npc = npcAction.NPC;
 
-        switch (npcAction.Action) {
-          case ActionType.Standing:
+        switch (npcAction.Desire.Type) {
+          case DesireType.Zen:
 
             break;
 
-          case ActionType.Walking:
+          case DesireType.Walk:
             ActiveCoroutines.Add(StartCoroutine(WalkNPCCo(npcAction)));
 
             break;
@@ -150,7 +142,7 @@ namespace johnfn {
     public IEnumerator WalkNPCCo(NPCAtTime npcAction) {
       var npc = npcAction.NPC;
       var movementSpeed = 0.3f;
-      var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.WalkingAction.Destination);
+      var path = _prefabReferences.MapController.PathFind(npc.transform.position, npcAction.Desire.Destination);
 
       while (path.Count > 0) {
         var nextCell = path.FirstOrDefault();
