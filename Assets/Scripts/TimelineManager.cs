@@ -127,6 +127,7 @@ namespace johnfn {
               // TODO - Actually see if they were able to talk!
 
               newNpcAtTime.Position = lastNpcAtTime.Position;
+              newNpcAtTime.PeopleTalkedTo.Add(lastNpcAtTime.Desire.PersonIWannaTalkTo);
 
               break;
             case DesireType.Walk:
@@ -253,11 +254,22 @@ namespace johnfn {
       var guy1 = npcAction.Desire.PersonIWannaTalkTo;
       var guy2 = npcAction.NPC.GetComponent<Interactable>().InteractType;
 
+      var guy1Obj = _groups.Interactables.Find(_ => _.InteractType == guy1);
+      var guy2Obj = _groups.Interactables.Find(_ => _.InteractType == guy2);
+
       var dialog = Dialog.GetDialog(guy1, guy2, _timeManager.MinutesSinceMidnight);
 
-      Log(guy1, guy2);
+      FollowText followText;
 
-      Debug.Log(dialog[0].Content);
+      foreach (var element in dialog) {
+        if (element.Speaker == guy1.ToString()) {
+          Log("Guy 1 says", element.Content);
+        } else {
+          Log("Guy 2 says", element.Content);
+        }
+
+        yield return new WaitForSeconds(1f);
+      }
 
       yield return null;
     }
