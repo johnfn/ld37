@@ -146,9 +146,6 @@ namespace johnfn {
 
           if (neighborPosition.x < 0 || neighborPosition.y < 0 ||
               neighborPosition.x >= mapWidth || neighborPosition.y >= mapHeight) {
-
-            Debug.Log(neighborPosition.x + " " + neighborPosition.y);
-
             continue;
           }
 

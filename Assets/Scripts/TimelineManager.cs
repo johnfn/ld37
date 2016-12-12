@@ -1,15 +1,17 @@
 using UnityEngine;
 using Zenject;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 
 namespace johnfn {
-  public struct TimeSpan {
+  public class TimeSpan {
     public int Start;
 
     public int Stop;
 
     public bool Contains(int time) {
-      return Start < time && Stop >= time;
+      return Start <= time && Stop > time;
     }
   }
 
@@ -45,18 +47,28 @@ namespace johnfn {
 
     public List<TimeSlice> Timeline = new List<TimeSlice>();
 
+    public HashSet<TimeSpan> SlicesProcessed = new HashSet<TimeSpan>();
+
+    public List<Coroutine> ActiveCoroutines = new List<Coroutine>();
+
     void Start() {
-      CalculateAllOfTimeAndSpace();
+      CalculateAllOfTimeAndSpace(0);
     }
 
     // Calculate everything that the NPCs will eventually do.
 
-    private void CalculateAllOfTimeAndSpace() {
+    private void CalculateAllOfTimeAndSpace(int fromTime) {
       Timeline = new List<TimeSlice>();
 
       // 15 minute resolution
 
-      for (var time = 0; time < 12 * 60; time += 15) {
+      for (var time = fromTime; time < 12 * 60; time += 15) {
+        var processedSlice = SlicesProcessed.FirstOrDefault(_ => _.Contains(time));
+
+        if (processedSlice != null) {
+          SlicesProcessed.Remove(processedSlice);
+        }
+
         var npcsAndActions = new List<NPCAtTime>();
 
         // Figure out what each NPC wants to be doing
@@ -102,8 +114,36 @@ namespace johnfn {
       var currentTime = _timeManager.MinutesSinceMidnight;
       var relevantTimeSlice = Timeline.Find(_ => _.TimeSpan.Contains(currentTime));
 
+      // This slice is currently running.
+      if (SlicesProcessed.Contains(relevantTimeSlice.TimeSpan)) {
+        return;
+      }
+
+      // A new slice has started.
+
+      // TODO - Find any running coroutines and kill them.
+
       foreach (var npcAction in relevantTimeSlice.NPCsAndActions) {
-        Debug.Log(npcAction.NPC + " is " + npcAction.Action + " ing");
+        var npc = npcAction.NPC;
+
+        switch (npcAction.Action) {
+          case ActionType.Standing:
+
+            break;
+
+          case ActionType.Walking:
+            ActiveCoroutines.Add(StartCoroutine(WalkNPCCo(npcAction)));
+
+            break;
+        }
+      }
+    }
+
+    public IEnumerator WalkNPCCo(NPCAtTime npcAction) {
+      while (true) {
+        npcAction.NPC.transform.Translate(new Vector3(0.01f * Time.deltaTime, 0f, 0f));
+
+        yield return null;
       }
     }
   }

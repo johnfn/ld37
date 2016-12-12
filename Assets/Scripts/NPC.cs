@@ -63,7 +63,7 @@ namespace johnfn {
 
     public Desire GetRelevantDesire(int currentTime) {
       foreach (var desire in Desires) {
-        if (desire.TimeSpan.Start < currentTime && desire.TimeSpan.Stop >= currentTime) {
+        if (desire.TimeSpan.Contains(currentTime)) {
           return desire;
         }
       }
