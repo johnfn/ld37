@@ -64,7 +64,8 @@ namespace johnfn {
       // none found...
 
       return new Desire {
-        Type = DesireType.Zen
+        Type = DesireType.Zen,
+        TimeSpan = new TimeSpan { Start = currentTime, Stop = currentTime + 15 }
       };
     }
   }

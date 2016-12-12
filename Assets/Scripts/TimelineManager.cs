@@ -15,7 +15,7 @@ namespace johnfn {
     }
   }
 
-  public struct NPCAtTime {
+  public class NPCAtTime {
     public Entity NPC;
 
     /**
@@ -52,12 +52,33 @@ namespace johnfn {
 
     // Calculate everything that the NPCs will eventually do.
 
+
     private void CalculateAllOfTimeAndSpace(int fromTime) {
       Timeline = new List<TimeSlice>();
 
+      // TODO - this doesn't really work with fromTime at all, heh.
+      // Necessarily special case first time slice
+
+      var initialConditions = new List<NPCAtTime>();
+
+      foreach (var NPC in NPC.NPCs) {
+        var npcAtTime = new NPCAtTime {
+          NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
+          Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
+          Desire = NPC.GetRelevantDesire(0),
+        };
+
+        initialConditions.Add(npcAtTime);
+      }
+
+      Timeline.Add(new TimeSlice {
+        NPCsAndActions = initialConditions,
+        TimeSpan = new TimeSpan { Start = fromTime, Stop = fromTime + 15 }
+      });
+
       // 15 minute resolution
 
-      for (var time = fromTime; time < 12 * 60; time += 15) {
+      for (var time = fromTime + 15; time < 12 * 60; time += 15) {
         var processedSlice = SlicesProcessed.FirstOrDefault(_ => _.Contains(time));
 
         if (processedSlice != null) {
@@ -69,25 +90,36 @@ namespace johnfn {
         // Figure out what each NPC wants to be doing
 
         // Calculate a new state for each NPC based on the old one
+
         foreach (var NPC in NPC.NPCs) {
           var desire = NPC.GetRelevantDesire(time);
-          var npcAtTime = new NPCAtTime {
-            NPC = NPC, // This is wrong too. There could be uninstantiated NPCS.
-            Position = NPC.transform.position, // Definitely wrong. Should take from previous frame I think
+          var nextNpcAtTime = new NPCAtTime {
+            NPC = NPC,
+            Desire = NPC.GetRelevantDesire(time)
           };
 
-          switch (desire.Type) {
+          // Figure out if previous time slice was successful!
+
+          var lastNpcAtTime = Timeline.Last().NPCsAndActions.Find(_ => _.NPC == NPC);
+
+          switch (lastNpcAtTime.Desire.Type) {
             case DesireType.Zen:
-              npcAtTime.Desire = desire;
+              nextNpcAtTime.Position = lastNpcAtTime.Position;
 
               break;
             case DesireType.Walk:
-              npcAtTime.Desire = desire;
+              // TODO - actually pathfind... somehow... lel
+
+              nextNpcAtTime.Position = lastNpcAtTime.Desire.Destination;
+
+              break;
+            default:
+              Debug.Log("Don't know how to propagate desire forward in time " + lastNpcAtTime.Desire.Type);
 
               break;
           }
 
-          npcsAndActions.Add(npcAtTime);
+          npcsAndActions.Add(nextNpcAtTime);
         }
 
         var newTimeSlice = new TimeSlice {
@@ -99,15 +131,16 @@ namespace johnfn {
       }
     }
 
-    // Actually make them appear to do the stuff.
+    // Actually make them appear to do the stuff. // <- best comment ever
 
     public void Update() {
       var currentTime = _timeManager.MinutesSinceMidnight;
       var relevantTimeSlice = Timeline.Find(_ => _.TimeSpan.Contains(currentTime));
 
-      // This slice is currently running.
 
       if (SlicesProcessed.Contains(relevantTimeSlice.TimeSpan)) {
+        // This slice is currently running.
+
         return;
       }
 
